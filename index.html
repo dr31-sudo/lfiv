@@ -62,35 +62,37 @@
   </style>
   <script>
     (function () {
-      // 👉 URL publique Apps Script - PAS de /a/macros/lfiv.org ici !
+      // 👉 URL publique de ta Web App Apps Script
       const APPS_SCRIPT_BASE = "https://script.google.com/macros/s/AKfycbwiZKIYlKIgHpneLfkC7BdIhOuIrI5otdoYyVJXfRoRa6SKMGMTzfvlMwUXO36-OpmI/exec";
 
       const params = new URLSearchParams(window.location.search);
-      const code = (params.get("c") || params.get("code") || "").trim();
-      const type = (params.get("type") || "").trim();
+      const c = (params.get("c") || "").trim();       // page parents
+      const code = (params.get("code") || "").trim(); // scan entrée
 
-      if (!code) {
+      let targetUrl = "";
+
+      if (c) {
+        // Page parents : noel.lfiv.org/?c=XXXX
+        targetUrl = APPS_SCRIPT_BASE + "?c=" + encodeURIComponent(c);
+      } else if (code) {
+        // Scan à l'entrée : noel.lfiv.org/?code=XXXX
+        targetUrl = APPS_SCRIPT_BASE + "?code=" + encodeURIComponent(code);
+      } else {
         document.addEventListener("DOMContentLoaded", () => {
           const card = document.querySelector(".card");
           if (card) {
             card.innerHTML = `
               <div class="logo">LFIV</div>
               <h1>❌ QR invalide</h1>
-              <p>Paramètre <code>c</code> manquant dans l'URL.</p>
-              <p style="margin-top:0.5rem;">Exemple attendu :<br><code>https://noel.lfiv.org/?c=12345</code></p>
+              <p>Paramètre <code>c</code> ou <code>code</code> manquant.</p>
+              <p style="margin-top:0.5rem;">Exemples attendus :<br>
+              <code>https://noel.lfiv.org/?c=12345</code><br>
+              <code>https://noel.lfiv.org/?code=12345</code></p>
             `;
           }
         });
         return;
       }
-
-      const targetParams = new URLSearchParams();
-      targetParams.set("c", code);
-      if (type) {
-        targetParams.set("type", type);
-      }
-
-      const targetUrl = APPS_SCRIPT_BASE + "?" + targetParams.toString();
 
       // Redirection vers Apps Script
       window.location.replace(targetUrl);
