@@ -2,11 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>LFIV Noël – QR Famille</title>
+  <title>LFIV – Fête de Noël – QR Famille</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fonts pour FR / EN / Lao -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Noto+Sans+Lao:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts FR / EN / Lao -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -19,22 +19,24 @@
     }
 
     :root {
-      --red-dark: #7f1d1d;
+      --red-deep: #7f1d1d;
       --red-main: #b91c1c;
-      --red-light: #fecaca;
-      --bg-deep: #111827;
+      --red-soft: #fecaca;
+      --bg-deep: #0b1120;
       --card-bg: #f9fafb;
+      --card-border: rgba(248, 113, 113, 0.55);
       --text-main: #111827;
       --text-muted: #4b5563;
+      --accent-soft: #e5e7eb;
     }
 
     body {
       min-height: 100vh;
       font-family: "Montserrat", "Noto Sans Lao", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top, rgba(254, 202, 202, 0.9), transparent 55%),
-        radial-gradient(circle at bottom, rgba(127, 29, 29, 0.9), transparent 60%),
-        linear-gradient(135deg, var(--bg-deep), #020617);
+        radial-gradient(circle at top, rgba(254, 226, 226, 0.95), transparent 55%),
+        radial-gradient(circle at bottom, rgba(127, 29, 29, 0.85), transparent 60%),
+        linear-gradient(135deg, #020617, var(--bg-deep));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -44,7 +46,7 @@
       overflow: hidden;
     }
 
-    /* Flocons */
+    /* Flocons discrets */
     .snowflake {
       position: fixed;
       top: -10px;
@@ -56,9 +58,9 @@
     }
 
     @keyframes snowfall {
-      0%   { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-      10%  { opacity: 1; }
-      90%  { opacity: 1; }
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
 
@@ -66,106 +68,145 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
     }
 
     .card {
       background: var(--card-bg);
       border-radius: 24px;
       padding: 20px 20px 22px;
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(248, 113, 113, 0.7);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--card-border);
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
     }
 
-    .logo-block {
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .logo-circle {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, #fee2e2, #b91c1c);
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background:
+        linear-gradient(145deg, #ffffff, #fee2e2);
+      border: 1px solid rgba(185, 28, 28, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: 0 6px 14px rgba(185, 28, 28, 0.5);
+      box-shadow: 0 8px 16px rgba(185, 28, 28, 0.35);
+      position: relative;
+      overflow: hidden;
     }
 
-    .logo-text {
-      display: flex;
-      flex-direction: column;
+    .brand-mark::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 0, rgba(248, 250, 252, 0.8), transparent 55%);
+      opacity: 0.9;
     }
 
-    .logo-text span.school {
+    .brand-initials {
+      position: relative;
       font-weight: 800;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.02em;
       color: var(--red-main);
       font-size: 0.9rem;
     }
 
-    .logo-text span.event {
-      font-size: 0.82rem;
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-text .school {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .brand-text .school span {
+      font-weight: 800;
+      color: var(--red-main);
+    }
+
+    .brand-text .event {
+      font-size: 0.8rem;
       color: var(--text-muted);
     }
 
     .lang-switch {
-      display: flex;
-      gap: 4px;
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 2px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      gap: 2px;
     }
 
     .lang-btn {
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      background: #f9fafb;
-      color: #111827;
-      font-size: 0.78rem;
-      padding: 4px 8px;
-      cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 4px 9px;
+      font-size: 0.75rem;
       font-weight: 600;
+      color: #374151;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      min-width: 62px;
+      justify-content: center;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .lang-flag {
+      font-size: 1rem;
+    }
+
+    .lang-label {
+      font-size: 0.73rem;
     }
 
     .lang-btn.active {
       background: linear-gradient(135deg, #b91c1c, #dc2626);
       color: #f9fafb;
-      border-color: transparent;
+      box-shadow: 0 3px 8px rgba(185, 28, 28, 0.45);
     }
 
     h1 {
       font-size: 1.35rem;
       color: var(--text-main);
+      text-align: center;
       margin-bottom: 4px;
       font-weight: 800;
-      text-align: center;
     }
 
     .subtitle {
       font-size: 0.9rem;
       color: var(--text-muted);
       text-align: center;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .qr-card {
       background: #ffffff;
       border-radius: 18px;
-      padding: 16px;
+      padding: 18px;
       border: 1px solid #e5e7eb;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
       display: flex;
       justify-content: center;
       margin-bottom: 14px;
@@ -183,6 +224,7 @@
     #qrcode img {
       max-width: 260px;
       max-height: 260px;
+      display: block;
     }
 
     .text-block {
@@ -197,9 +239,9 @@
     }
 
     .code-label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .code-value {
@@ -231,6 +273,10 @@
       box-shadow: 0 8px 18px rgba(185, 28, 28, 0.45);
     }
 
+    .btn-primary span.icon {
+      font-size: 1.1rem;
+    }
+
     .btn-primary:active {
       transform: translateY(1px);
       box-shadow: 0 4px 10px rgba(185, 28, 28, 0.4);
@@ -240,17 +286,17 @@
       font-size: 0.78rem;
       color: var(--text-muted);
       text-align: center;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .error {
       text-align: center;
-      padding: 24px 10px 10px;
+      padding: 24px 10px 12px;
     }
 
     .error h2 {
       font-size: 1.1rem;
-      color: #b91c1c;
+      color: var(--red-main);
       margin-bottom: 6px;
     }
 
@@ -276,23 +322,39 @@
   </style>
 </head>
 <body>
-  <!-- Flocons décoratifs -->
+  <!-- Flocons -->
   <div id="snow-container"></div>
 
   <div class="wrapper">
-    <div class="card" id="card">
+    <div class="card">
       <div class="card-header">
-        <div class="logo-block">
-          <div class="logo-circle">🎅</div>
-          <div class="logo-text">
-            <span class="school">LFIV</span>
-            <span class="event" id="tagline">Fête de Noël</span>
+        <div class="brand">
+          <div class="brand-mark">
+            <div class="brand-initials">LFIV</div>
+          </div>
+          <div class="brand-text">
+            <div class="school">
+              Lycée Français <span>International</span> de Vientiane
+            </div>
+            <div class="event" id="tagline">
+              Fête de Noël
+            </div>
           </div>
         </div>
+
         <div class="lang-switch">
-          <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
-          <button class="lang-btn" data-lang="lo">🇱🇦 LO</button>
-          <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+          <button class="lang-btn" data-lang="fr">
+            <span class="lang-flag">🇫🇷</span>
+            <span class="lang-label">Français</span>
+          </button>
+          <button class="lang-btn" data-lang="lo">
+            <span class="lang-flag">🇱🇦</span>
+            <span class="lang-label">ລາວ</span>
+          </button>
+          <button class="lang-btn" data-lang="en">
+            <span class="lang-flag">🇬🇧</span>
+            <span class="lang-label">English</span>
+          </button>
         </div>
       </div>
 
@@ -315,7 +377,8 @@
 
         <div class="btn-row">
           <button class="btn-primary" id="btn-download">
-            📥 <span id="btn-text">Télécharger le QR</span>
+            <span class="icon">📥</span>
+            <span id="btn-text">Télécharger le QR</span>
           </button>
           <p class="small-note" id="small-note"></p>
         </div>
@@ -323,23 +386,23 @@
 
       <div id="content-error" class="error" style="display:none;">
         <h2 id="error-title">QR invalide</h2>
-        <p id="error-text">Lien incorrect ou code manquant.</p>
+        <p id="error-text">Code manquant ou lien incorrect.</p>
       </div>
     </div>
   </div>
 
   <script>
-    // --- Flocons ---
+    // --- Flocons discrets ---
     (function createSnow() {
       const container = document.getElementById("snow-container");
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 26; i++) {
         const s = document.createElement("div");
         s.className = "snowflake";
         s.textContent = "❄";
         s.style.left = Math.random() * 100 + "%";
-        s.style.animationDuration = (6 + Math.random() * 6) + "s";
+        s.style.animationDuration = (7 + Math.random() * 7) + "s";
         s.style.animationDelay = (Math.random() * 5) + "s";
-        s.style.fontSize = (10 + Math.random() * 12) + "px";
+        s.style.fontSize = (9 + Math.random() * 10) + "px";
         container.appendChild(s);
       }
     })();
@@ -350,8 +413,8 @@
         tagline: "Fête de Noël",
         title: "Votre QR d'accès famille",
         subtitle: "À présenter à l'accueil le soir de l'événement.",
-        line1: "Ce QR code correspond à votre famille pour la fête de Noël du LFIV.",
-        line2: "Gardez-le sur votre téléphone ou imprimez-le si besoin.",
+        line1: "Ce QR code est lié à votre famille pour la fête de Noël du LFIV.",
+        line2: "Vous pouvez le garder sur votre téléphone ou l'imprimer si besoin.",
         codeLabelPrefix: "Code famille : ",
         btnDownload: "Télécharger le QR",
         smallNote: "Astuce : augmentez la luminosité de l'écran lors du scan.",
@@ -359,11 +422,11 @@
         errorText: "Code manquant ou lien incorrect. Merci de vérifier le message reçu."
       },
       en: {
-        tagline: "Christmas Party",
+        tagline: "Christmas Celebration",
         title: "Your family access QR",
-        subtitle: "Show this at the entrance on the event night.",
-        line1: "This QR code is linked to your family for the LFIV Christmas party.",
-        line2: "Keep it on your phone or print it if needed.",
+        subtitle: "Please show it at the entrance on the evening of the event.",
+        line1: "This QR code is linked to your family for the LFIV Christmas celebration.",
+        line2: "You may keep it on your phone or print it if you prefer.",
         codeLabelPrefix: "Family code: ",
         btnDownload: "Download QR",
         smallNote: "Tip: increase your screen brightness when scanning.",
@@ -372,10 +435,10 @@
       },
       lo: {
         tagline: "ງານລ້ຽງຄຣິສມາດ",
-        title: "QR ເຂົ້າຮ່ວມຂອງຄອບຄົວທ່ານ",
+        title: "QR ເຂົ້າຮ່ວມຂອງຄອບຄົວ",
         subtitle: "ສະແດງ QR ນີ້ທີ່ທາງເຂົ້າໃນຄືນງານ.",
         line1: "QR ນີ້ຜູກກັບຄອບຄົວຂອງທ່ານສຳລັບງານຄຣິສມາດຂອງ LFIV.",
-        line2: "ບັນທຶກໄວ້ໃນໂທລະສັບ ຫຼືພິມອອກກໍໄດ້.",
+        line2: "ສາມາດເກັບໄວ້ໃນໂທລະສັບ ຫຼືພິມອອກກໍໄດ້.",
         codeLabelPrefix: "ລະຫັດຄອບຄົວ: ",
         btnDownload: "ດາວໂຫຼດ QR",
         smallNote: "ແນະນຳ: ເພີ່ມຄວາມສະຫວ່າງຂອງຈໍເວລາສະແກນ.",
@@ -388,7 +451,7 @@
       const nav = (navigator.language || (navigator.languages && navigator.languages[0]) || "fr").toLowerCase();
       if (nav.startsWith("fr")) return "fr";
       if (nav.startsWith("en")) return "en";
-      if (nav.startsWith("lo") || nav.startsWith("la")) return "lo"; // lo-LA
+      if (nav.startsWith("lo") || nav.startsWith("la")) return "lo";
       return "fr";
     }
 
@@ -399,7 +462,6 @@
       const t = translations[lang] || translations.fr;
 
       document.documentElement.setAttribute("lang", lang);
-
       document.getElementById("tagline").textContent = t.tagline;
       document.getElementById("title").textContent = t.title;
       document.getElementById("subtitle").textContent = t.subtitle;
@@ -408,7 +470,6 @@
       document.getElementById("code-label-prefix").textContent = t.codeLabelPrefix;
       document.getElementById("btn-text").textContent = t.btnDownload;
       document.getElementById("small-note").textContent = t.smallNote;
-
       document.getElementById("error-title").textContent = t.errorTitle;
       document.getElementById("error-text").textContent = t.errorText;
 
@@ -424,10 +485,9 @@
     }
 
     function buildQrString(code) {
-      // on encode un lien du type https://noel.lfiv.org/?c=XXXXX
-      // pour que le scanner puisse extraire ?c=XXXXX
+      // Encode une URL type https://noel.lfiv.org/?c=XXXXX
       const origin = window.location.origin;
-      const path   = window.location.pathname.split("#")[0].split("?")[0];
+      const path = window.location.pathname.split("#")[0].split("?")[0];
       return origin + path + "?c=" + encodeURIComponent(code);
     }
 
@@ -453,15 +513,15 @@
       const btn = document.getElementById("btn-download");
       btn.onclick = () => {
         const canvas = document.querySelector("#qrcode canvas");
-        const img    = document.querySelector("#qrcode img");
-        let dataUrl  = null;
+        const img = document.querySelector("#qrcode img");
+        let dataUrl = null;
 
+        // On prend UNIQUEMENT le canvas/image du QR
         if (canvas && canvas.toDataURL) {
           dataUrl = canvas.toDataURL("image/png");
         } else if (img && img.src) {
           dataUrl = img.src;
         }
-
         if (!dataUrl) return;
 
         const a = document.createElement("a");
@@ -474,14 +534,14 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      // Langue auto + boutons
+      // Langue auto + switch
       applyLang(currentLang);
       document.querySelectorAll(".lang-btn").forEach(btn => {
         btn.addEventListener("click", () => applyLang(btn.dataset.lang));
       });
 
       const code = getCodeFromUrl();
-      const okBlock    = document.getElementById("content-ok");
+      const okBlock = document.getElementById("content-ok");
       const errorBlock = document.getElementById("content-error");
 
       if (!code) {
@@ -490,7 +550,6 @@
         return;
       }
 
-      // Affiche le bloc normal
       okBlock.style.display = "block";
       errorBlock.style.display = "none";
 
