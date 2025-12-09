@@ -10,6 +10,8 @@
 
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- html2canvas pour télécharger toute la carte -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
     * {
@@ -101,7 +103,7 @@
     }
 
     .card-inner {
-      margin-top: 18px;
+      margin-top: 52px; /* on descend le contenu pour ne pas être sous les boutons langue */
     }
 
     .card-header {
@@ -133,14 +135,15 @@
 
     .lang-switch {
       position: absolute;
-      top: 18px;
-      right: 20px;
+      top: 10px;        /* plus haut */
+      right: 18px;      /* bien collé à droite du carré */
       display: inline-flex;
       border-radius: 999px;
       padding: 2px;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       border: 1px solid rgba(248, 250, 252, 0.18);
       gap: 2px;
+      z-index: 3;
     }
 
     .lang-btn {
@@ -308,7 +311,7 @@
     /* Erreur */
     .error-block {
       text-align: center;
-      padding: 30px 10px 12px;
+      padding: 40px 10px 18px;
     }
 
     .error-block h2 {
@@ -347,7 +350,6 @@
       }
       #snow-container,
       .lang-switch,
-      .ribbon,
       .btn-actions {
         display: none !important;
       }
@@ -367,7 +369,7 @@
   <div id="snow-container"></div>
 
   <div class="wrapper">
-    <div class="card">
+    <div class="card" id="card-root">
       <div class="ribbon" id="ribbon-text">INVITATION FAMILLE</div>
 
       <div class="lang-switch">
@@ -483,7 +485,7 @@
         codeLabel: "Family code:",
         footer: "This QR code is <strong>unique</strong> to your family.",
         hint: "Tip: increase your screen brightness when scanning.",
-        btnDownload: "Download QR",
+        btnDownload: "Download QR card",
         btnPrint: "Print the pass",
         errorTitle: "Invalid QR",
         errorText: "Missing code or invalid link. Please check the link you received."
@@ -498,7 +500,7 @@
         codeLabel: "ລະຫັດຄອບຄົວ:",
         footer: "QR ນີ້ເປັນ <strong>ຂອງຄອບຄົວທ່ານ</strong> ໂດຍສະເພາະ.",
         hint: "ແນະນຳ: ເພີ່ມຄວາມສວ່າງຫນ້າຈໍເມື່ອສະແກນ QR.",
-        btnDownload: "ດາວໂຫຼດ QR",
+        btnDownload: "ດາວໂຫຼດກາດ QR",
         btnPrint: "ພິມບັດ QR",
         errorTitle: "QR ບໍ່ຖືກຕ້ອງ",
         errorText: "ບໍ່ພົບລະຫັດ ຫຼື ລິ້ງບໍ່ຖືກ. ກວດເບິ່ງລິ້ງທີ່ໄດ້ຮັບອີກຄັ້ງ."
@@ -544,38 +546,28 @@
         });
       });
 
-      // Bouton téléchargement (uniquement le QR)
+      // Bouton téléchargement = capture de TOUTE la carte
       const btnDownload = document.getElementById("btn-download");
       if (btnDownload) {
         btnDownload.addEventListener("click", () => {
-          const qrCanvas = document.querySelector("#qrcode canvas");
-          const qrImg = document.querySelector("#qrcode img");
+          const card = document.getElementById("card-root");
+          if (!card || !window.html2canvas) return;
 
-          let dataUrl = null;
-
-          if (qrCanvas && qrCanvas.toDataURL) {
-            dataUrl = qrCanvas.toDataURL("image/png");
-          } else if (qrImg) {
-            const tempCanvas = document.createElement("canvas");
-            tempCanvas.width = qrImg.naturalWidth || 512;
-            tempCanvas.height = qrImg.naturalHeight || 512;
-            const ctx = tempCanvas.getContext("2d");
-            ctx.drawImage(qrImg, 0, 0, tempCanvas.width, tempCanvas.height);
-            dataUrl = tempCanvas.toDataURL("image/png");
-          }
-
-          if (!dataUrl) return;
-
-          const link = document.createElement("a");
-          link.href = dataUrl;
-          link.download = `lfiv_noel_qr_${code || "famille"}.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+          html2canvas(card, {
+            backgroundColor: null,
+            scale: window.devicePixelRatio > 1 ? 2 : 1
+          }).then(canvas => {
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = `lfiv_noel_invitation_${code || "famille"}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          });
         });
       }
 
-      // Bouton impression
+      // Bouton impression (utilise le @media print)
       const btnPrint = document.getElementById("btn-print");
       if (btnPrint) {
         btnPrint.addEventListener("click", () => {
