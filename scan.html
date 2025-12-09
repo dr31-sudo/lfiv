@@ -272,7 +272,7 @@
             Scanne un QR à la fois. Le résultat s'affiche et le scanner se met en pause.
           </div>
         </div>
-        <span class="badge">noel.lfiv.org • scan interne</span>
+        <!-- badge supprimé -->
       </div>
 
       <div class="main">
@@ -285,7 +285,7 @@
           <div class="tips">
             <ul>
               <li>Vert = entrée validée</li>
-              <li>Jaune = déjà scanné</li>
+              <li>Jaune = déjà scannée</li>
               <li>Rouge = code inconnu / non autorisé</li>
             </ul>
           </div>
@@ -311,6 +311,23 @@
             </button>
             <button class="btn btn-secondary" id="btn-clear">
               🗑️ Reset local
+            </button>
+          </div>
+
+          <!-- Saisie manuelle -->
+          <div style="margin-top: 12px; font-size: 0.8rem; color:#e5e7eb;">
+            Si un QR ne marche pas, saisissez le <strong>code famille</strong> ci-dessous :
+          </div>
+          <div class="buttons-row">
+            <input
+              id="manual-code"
+              type="text"
+              placeholder="Code famille (ex : 59869)"
+              autocomplete="off"
+              style="flex:1; min-width:140px; padding:6px 10px; border-radius:999px; border:1px solid rgba(148,163,184,0.7); background:#020617; color:#e5e7eb; font-size:0.8rem;"
+            >
+            <button class="btn btn-primary" id="btn-manual">
+              ✔️ Valider
             </button>
           </div>
         </div>
@@ -391,10 +408,10 @@
     let html5QrCode = null;
     let isPaused = false;
 
-    // tous les scans de cet appareil
-    let scanEvents = []; // {code,status,timestamp}
-    // codes validés au moins une fois
+    let scanEvents = [];        // {code,status,timestamp}
     let validatedCodes = new Set();
+    let countDup = 0;
+    let countBad = 0;
 
     function saveToStorage() {
       const payload = {
@@ -404,32 +421,34 @@
       localStorage.setItem("lfiv_noel_scans", JSON.stringify(payload));
     }
 
+    function rebuildCounters() {
+      countDup = scanEvents.filter(e => e.status === "duplicate").length;
+      countBad = scanEvents.filter(e => e.status === "invalid").length;
+    }
+
     function loadFromStorage() {
       try {
         const raw = localStorage.getItem("lfiv_noel_scans");
         if (!raw) return;
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.events)) scanEvents = parsed.events;
+        if (Array.isArray(parsed.events))   scanEvents = parsed.events;
         if (Array.isArray(parsed.validated)) validatedCodes = new Set(parsed.validated);
+        rebuildCounters();
       } catch (e) {
         console.error("Erreur load storage", e);
       }
     }
 
     function updateStats() {
-      const ok  = validatedCodes.size;
-      const dup = scanEvents.filter(e => e.status === "duplicate").length;
-      const bad = scanEvents.filter(e => e.status === "invalid").length;
-      document.getElementById("stat-ok").textContent  = ok;
-      document.getElementById("stat-dup").textContent = dup;
-      document.getElementById("stat-bad").textContent = bad;
+      document.getElementById("stat-ok").textContent  = validatedCodes.size;
+      document.getElementById("stat-dup").textContent = countDup;
+      document.getElementById("stat-bad").textContent = countBad;
     }
 
     // extrait le code depuis le contenu du QR
     function extractCodeFromText(text) {
       text = (text || "").trim();
 
-      // URL avec ?c=...
       try {
         if (text.includes("://")) {
           const u = new URL(text);
@@ -438,12 +457,10 @@
         }
       } catch (e) {}
 
-      // juste un code brut
       if (/^[0-9A-Za-z]+$/.test(text)) {
         return text;
       }
 
-      // sinon on tente suite de chiffres
       const m = text.match(/[0-9]{2,}/);
       if (m) return m[0];
 
@@ -469,7 +486,7 @@
       } else if (info.status === "duplicate") {
         modal.classList.add("modal-dup");
         icon.textContent  = "⚠️";
-        title.textContent = "Déjà scanné";
+        title.textContent = "Déjà scannée";
         msg.textContent   = "Cette famille a déjà été validée à l'entrée.";
       } else {
         modal.classList.add("modal-bad");
@@ -487,14 +504,11 @@
       document.getElementById("modal-backdrop").classList.remove("show");
     }
 
-    // LOGIQUE DE SCAN
-    async function handleScan(decodedText) {
-      if (isPaused) return;
-
-      const code = extractCodeFromText(decodedText);
+    // Validation centralisée (QR + manuel)
+    async function processCode(code) {
+      code = (code || "").trim();
       if (!code) return;
 
-      // pause pendant le popup
       isPaused = true;
       if (html5QrCode) {
         try { await html5QrCode.pause(true); } catch(e) {}
@@ -505,8 +519,10 @@
 
       if (!VALID_CODES.has(code)) {
         status = "invalid";
+        countBad++;
       } else if (validatedCodes.has(code)) {
         status = "duplicate";
+        countDup++;
       } else {
         status = "ok";
         validatedCodes.add(code);
@@ -516,6 +532,16 @@
       saveToStorage();
       updateStats();
       showResultModal({ code, status });
+    }
+
+    // LOGIQUE DE SCAN QR
+    async function handleScan(decodedText) {
+      if (isPaused) return;
+
+      const code = extractCodeFromText(decodedText);
+      if (!code) return;
+
+      await processCode(code);
     }
 
     function handleScanError(err) {
@@ -548,6 +574,8 @@
       if (!confirm("Effacer tous les scans enregistrés sur CET appareil ?")) return;
       scanEvents = [];
       validatedCodes = new Set();
+      countDup = 0;
+      countBad = 0;
       saveToStorage();
       updateStats();
     }
@@ -576,6 +604,25 @@
 
       document.getElementById("btn-export").addEventListener("click", exportCsv);
       document.getElementById("btn-clear").addEventListener("click", clearLocal);
+
+      // Saisie manuelle
+      const manualInput = document.getElementById("manual-code");
+      const manualBtn   = document.getElementById("btn-manual");
+
+      manualBtn.addEventListener("click", async () => {
+        const code = manualInput.value;
+        if (!code.trim()) return;
+        await processCode(code);
+        manualInput.value = "";
+        manualInput.focus();
+      });
+
+      manualInput.addEventListener("keydown", async (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          manualBtn.click();
+        }
+      });
     });
   </script>
 </body>
