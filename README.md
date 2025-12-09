@@ -32,10 +32,5 @@ Système complet pour la **gestion des accès familles** à la soirée de Noël 
 lfiv-noel/
 ├── index.html   # Page publique : carte d'invitation + QR (parents)
 ├── scan.html    # Page interne : scanner d'entrées + CSV (équipe LFIV)
-├── CNAME    # CNAME DNS
-└── README.md
-
-## 📝 Licence
-
-Projet interne LFIV – usage réservé au Lycée Français International de Vientiane.
-Ne pas réutiliser tel quel en production sans adapter la sécurité, les textes et la gestion des données.
+├── CNAME        # Nom de domaine personnalisé pour GitHub Pages (noel.lfiv.org)
+└── README.md    # Ce fichier
