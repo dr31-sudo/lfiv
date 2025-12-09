@@ -5,21 +5,64 @@
   <title>LFIV Noël – Redirection</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #8B0000;
-      color: #fff;
+      color: #ffffff;
       min-height: 100vh;
+      margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 1rem;
     }
+    .card {
+      background: #ffffff;
+      color: #2d3748;
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+    .logo {
+      font-weight: 900;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #b91c1c;
+      letter-spacing: 2px;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      color: #4b5563;
+    }
+    .loading {
+      font-size: 0.95rem;
+      margin-top: 0.75rem;
+      color: #6b7280;
+    }
+    h1 {
+      font-size: 1.3rem;
+      margin: 0.5rem 0;
+    }
+    p {
+      margin: 0.25rem 0;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
   </style>
   <script>
     (function () {
-      // 👉 Mets ici l'URL de ta Web App Apps Script (celle qui marche déjà)
+      // 🔹 URL publique de ta Web App Apps Script (SANS /a/macros/lfiv.org)
       const APPS_SCRIPT_BASE = "https://script.google.com/macros/s/AKfycbwiZKIYlKIgHpneLfkC7BdIhOuIrI5otdoYyVJXfRoRa6SKMGMTzfvlMwUXO36-OpmI/exec";
 
       const params = new URLSearchParams(window.location.search);
@@ -27,8 +70,17 @@
       const type = (params.get("type") || "").trim();
 
       if (!code) {
+        // Pas de ?c= → on affiche un message d'erreur lisible
         document.addEventListener("DOMContentLoaded", () => {
-          document.body.innerHTML = "<h1>❌ QR invalide</h1><p>Paramètre <code>c</code> manquant.</p>";
+          const card = document.querySelector(".card");
+          if (card) {
+            card.innerHTML = `
+              <div class="logo">LFIV</div>
+              <h1>❌ QR invalide</h1>
+              <p>Paramètre <code>c</code> manquant dans l'URL.</p>
+              <p style="margin-top:0.5rem;">Exemple attendu :<br><code>https://noel.lfiv.org/?c=12345</code></p>
+            `;
+          }
         });
         return;
       }
@@ -47,6 +99,11 @@
   </script>
 </head>
 <body>
-  <p>Redirection en cours vers LFIV Noël…</p>
+  <div class="card">
+    <div class="logo">LFIV</div>
+    <p class="subtitle">Redirection sécurisée vers le contrôleur de QR codes.</p>
+    <h1>Redirection en cours…</h1>
+    <p class="loading">Merci de patienter une seconde.</p>
+  </div>
 </body>
 </html>
