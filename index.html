@@ -2,469 +2,581 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>LFIV Noël 2025 – Votre QR Famille</title>
+  <title>LFIV Noël – Scanner entrées</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Polices -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <!-- Librairie QR -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- HTML5 QRCode -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
-      font-family: "Montserrat", system-ui, -apple-system, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #fecaca, transparent 55%),
+                  radial-gradient(circle at bottom, #fee2e2, transparent 60%),
+                  linear-gradient(135deg, #7f1d1d, #111827);
       color: #f9fafb;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at top, rgba(248, 250, 252, 0.12), transparent 55%),
-        radial-gradient(circle at bottom, rgba(248, 250, 252, 0.06), transparent 60%),
-        linear-gradient(135deg, #7f1d1d, #991b1b 40%, #111827 85%);
-      position: relative;
-    }
-
-    /* halos animés */
-    .glow {
-      position: absolute;
-      width: 460px;
-      height: 460px;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle, rgba(248, 250, 252, 0.09), transparent 60%);
-      filter: blur(3px);
-      animation: glowMove 18s ease-in-out infinite alternate;
-      pointer-events: none;
-    }
-    .glow.glow-2 {
-      width: 360px;
-      height: 360px;
-      opacity: 0.8;
-      animation-duration: 24s;
-      animation-direction: alternate-reverse;
-    }
-
-    @keyframes glowMove {
-      0%   { transform: translate(-35%, -25%); }
-      50%  { transform: translate(15%, -10%); }
-      100% { transform: translate(35%, 15%); }
-    }
-
-    /* neige */
-    .snow {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 1;
-    }
-    .snowflake {
-      position: absolute;
-      top: -10%;
-      color: rgba(248, 250, 252, 0.9);
-      font-size: 0.9rem;
-      animation: snowfall linear infinite;
-      text-shadow: 0 0 6px rgba(127, 29, 29, 0.6);
-    }
-    @keyframes snowfall {
-      0%   { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
-      10%  { opacity: 1; }
-      90%  { opacity: 1; }
-      100% { transform: translate3d(0, 110vh, 0) rotate(360deg); opacity: 0; }
     }
 
     .wrapper {
-      position: relative;
-      z-index: 2;
       width: 100%;
-      max-width: 460px;
+      max-width: 900px;
     }
 
     .card {
-      position: relative;
-      background: rgba(248, 250, 252, 0.98);
-      border-radius: 26px;
-      padding: 22px 18px 20px;
-      box-shadow:
-        0 22px 60px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(127, 29, 29, 0.35);
-      backdrop-filter: blur(12px);
-      overflow: hidden;
-      animation: cardIn 0.7s ease-out both;
-      color: #111827;
-    }
-
-    @keyframes cardIn {
-      0%   { opacity: 0; transform: translateY(20px) scale(0.97); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* Ruban */
-    .ribbon {
-      position: absolute;
-      top: 12px;
-      left: -60px;
-      background: linear-gradient(135deg, #facc15, #f97316);
-      color: #7f1d1d;
-      padding: 7px 60px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      transform: rotate(-12deg);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      background: rgba(15,23,42,0.96);
+      border-radius: 24px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 20px 50px rgba(15,23,42,0.9);
+      border: 1px solid rgba(248, 113, 113, 0.5);
     }
 
     .header {
-      text-align: center;
-      margin-top: 26px;
-      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
 
-    .school {
-      font-size: 0.8rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #b91c1c;
-      opacity: 0.95;
-      margin-bottom: 4px;
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    .title {
-      font-family: "Playfair Display", serif;
-      font-size: 1.9rem;
-      font-weight: 900;
-      color: #7f1d1d;
-      text-shadow: 0 2px 6px rgba(248, 113, 113, 0.4);
-      margin-bottom: 2px;
+    .title-block h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .year {
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: #ef4444;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .title-block h1 span.icon {
+      font-size: 1.4rem;
     }
 
     .subtitle {
-      margin-top: 14px;
-      font-size: 0.92rem;
-      color: #374151;
-      line-height: 1.4;
-    }
-
-    .highlight {
-      color: #b91c1c;
-      font-weight: 600;
-    }
-
-    .tagline {
-      margin-top: 8px;
-      font-size: 0.8rem;
-      color: #6b7280;
-    }
-
-    .code-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: #fee2e2;
-      border: 1px solid #fecaca;
-      color: #7f1d1d;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin: 16px auto 0;
-      gap: 6px;
-    }
-    .code-pill span.code-value {
-      font-family: "Montserrat", monospace;
-      font-weight: 700;
-      color: #b91c1c;
-    }
-
-    .qr-wrapper {
-      margin-top: 14px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .qr-card {
-      position: relative;
-      padding: 12px;
-      border-radius: 22px;
-      background: #fef2f2;
-      box-shadow:
-        0 12px 35px rgba(127, 29, 29, 0.6),
-        0 0 0 1px rgba(248, 113, 113, 0.6);
-      animation: qrIn 0.7s ease-out 0.15s both;
-    }
-
-    @keyframes qrIn {
-      0%   { opacity: 0; transform: translateY(10px) scale(0.94); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    #qrcode {
-      position: relative;
-      width: 260px;
-      height: 260px;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #ffffff; /* important pour contraste max */
-    }
-
-    .qr-caption {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #4b5563;
-      margin-top: 8px;
-      opacity: 0.95;
-    }
-
-    .qr-caption small {
-      display: block;
-      font-size: 0.76rem;
-      color: #6b7280;
-      margin-top: 2px;
-    }
-
-    .actions {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-    }
-    .btn-download {
-      border: none;
-      border-radius: 999px;
-      padding: 8px 16px;
       font-size: 0.85rem;
-      font-weight: 600;
-      background: linear-gradient(135deg, #b91c1c, #dc2626);
-      color: #fef2f2;
-      display: inline-flex;
+      color: #e5e7eb;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.08);
+      border: 1px solid rgba(248, 250, 252, 0.2);
+      color: #e5e7eb;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    #reader {
+      width: 100%;
+      min-height: 260px;
+      background: #020617;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(148,163,184,0.6);
+    }
+
+    .info-panel {
+      background: rgba(15,23,42,0.9);
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .info-panel h2 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      display: flex;
       align-items: center;
       gap: 6px;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(185, 28, 28, 0.5);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .btn-download:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(185, 28, 28, 0.6);
-    }
-    .btn-download:active {
-      transform: translateY(0);
-      box-shadow: 0 3px 10px rgba(185, 28, 28, 0.5);
+    .info-panel h2 span {
+      font-size: 1.1rem;
     }
 
-    .footer {
-      margin-top: 14px;
-      font-size: 0.78rem;
-      text-align: center;
-      color: #6b7280;
-      line-height: 1.4;
-    }
-
-    /* État erreur */
-    .error-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #b91c1c;
-      margin-top: 10px;
-      margin-bottom: 4px;
-    }
-    .error-text {
-      font-size: 0.9rem;
-      color: #7f1d1d;
+    .tips {
+      font-size: 0.8rem;
+      color: #e5e7eb;
       margin-bottom: 10px;
     }
-    .error-hint {
-      font-size: 0.8rem;
-      color: #6b7280;
+    .tips ul {
+      margin-left: 1rem;
+      margin-top: 4px;
     }
-    .error-hint code {
-      background: #fee2e2;
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-size: 0.76rem;
-      border: 1px solid #fecaca;
-      color: #7f1d1d;
+    .tips li {
+      margin-bottom: 2px;
     }
 
-    @media (max-width: 480px) {
-      .card {
-        padding: 20px 16px 18px;
-        border-radius: 22px;
-      }
-      .header {
-        margin-top: 22px;
-      }
-      .title {
-        font-size: 1.6rem;
-      }
-      .subtitle {
-        font-size: 0.88rem;
-      }
-      #qrcode {
-        width: 220px;
-        height: 220px;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .stat {
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+    }
+
+    .stat-label {
+      opacity: 0.85;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .stat.ok      { background: rgba(22,163,74,0.18);  border: 1px solid rgba(34,197,94,0.7); }
+    .stat.dup     { background: rgba(234,179,8,0.18);  border: 1px solid rgba(250,204,21,0.7); }
+    .stat.invalid { background: rgba(220,38,38,0.18);  border: 1px solid rgba(248,113,113,0.7); }
+
+    .buttons-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+    }
+    .btn-secondary {
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.7);
+    }
+
+    /* Modal résultat */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.80);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px;
+    }
+    .modal-backdrop.show {
+      display: flex;
+    }
+    .modal {
+      background: #020617;
+      border-radius: 22px;
+      padding: 18px 18px 16px;
+      max-width: 420px;
+      width: 100%;
+      border: 1px solid rgba(148,163,184,0.7);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      animation: pop 0.18s ease-out;
+    }
+    @keyframes pop {
+      from { opacity: 0; transform: translateY(10px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .modal-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .modal-body {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+    }
+    .modal-code {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: inline-flex;
+      gap: 6px;
+    }
+    .modal-footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .modal-ok   .modal-icon { background: rgba(22,163,74,0.15);  color:#4ade80; }
+    .modal-dup  .modal-icon { background: rgba(234,179,8,0.15);  color:#facc15; }
+    .modal-bad  .modal-icon { background: rgba(220,38,38,0.15);  color:#fca5a5; }
+    .modal-ok   .modal-title { color:#bbf7d0; }
+    .modal-dup  .modal-title { color:#facc15; }
+    .modal-bad  .modal-title { color:#fecaca; }
+
+    @media (max-width: 768px) {
+      .main {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <!-- halos animés -->
-  <div class="glow" style="top:-10%;left:-5%;"></div>
-  <div class="glow glow-2" style="bottom:-20%;right:-10%;"></div>
-
-  <!-- neige -->
-  <div class="snow" id="snow-layer"></div>
-
   <div class="wrapper">
-    <div class="card" id="card">
-      <div class="ribbon">Fête de fin d’année</div>
-
+    <div class="card">
       <div class="header">
-        <div class="school">Lycée Français International de Vientiane</div>
-        <div class="title">Soirée de Noël</div>
-        <div class="year">2025 • Accès familles</div>
+        <div class="title-block">
+          <h1><span class="icon">🎅</span>LFIV Noël – Scanner entrées</h1>
+          <div class="subtitle">
+            Scanne un QR à la fois. Le résultat s'affiche et le scanner se met en pause.
+          </div>
+        </div>
+        <span class="badge">noel.lfiv.org • scan interne</span>
       </div>
 
-      <p class="subtitle">
-        Nous n’avons pas trouvé votre <span class="highlight">code famille</span>.
-      </p>
-      <p class="tagline">
-        Le lien doit ressembler à :
-        <br><code>https://noel.lfiv.org/?c=12345</code>
-      </p>
+      <div class="main">
+        <div>
+          <div id="reader"></div>
+        </div>
+
+        <div class="info-panel">
+          <h2><span>📊</span> Suivi en temps réel</h2>
+          <div class="tips">
+            <ul>
+              <li>Vert = entrée validée</li>
+              <li>Jaune = déjà scanné</li>
+              <li>Rouge = code inconnu / non autorisé</li>
+            </ul>
+          </div>
+
+          <div class="stats">
+            <div class="stat ok">
+              <div class="stat-label">Entrées validées (uniques)</div>
+              <div class="stat-value" id="stat-ok">0</div>
+            </div>
+            <div class="stat dup">
+              <div class="stat-label">Scans déjà passés</div>
+              <div class="stat-value" id="stat-dup">0</div>
+            </div>
+            <div class="stat invalid">
+              <div class="stat-label">Codes inconnus</div>
+              <div class="stat-value" id="stat-bad">0</div>
+            </div>
+          </div>
+
+          <div class="buttons-row">
+            <button class="btn btn-secondary" id="btn-export">
+              📥 Export CSV
+            </button>
+            <button class="btn btn-secondary" id="btn-clear">
+              🗑️ Reset local
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal résultat -->
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <div class="modal-icon" id="modal-icon">✅</div>
+        <div class="modal-title" id="modal-title">Entrée validée</div>
+      </div>
+      <div class="modal-body">
+        <div id="modal-message">Famille OK.</div>
+        <div class="modal-code">
+          <strong>Code :</strong> <span id="modal-code">12345</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="modal-next">Scanner suivant</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // --- Flocons animés ---
-    (function createSnow() {
-      const snowLayer = document.getElementById("snow-layer");
-      const flakes = 40;
-      for (let i = 0; i < flakes; i++) {
-        const span = document.createElement("span");
-        span.className = "snowflake";
-        span.textContent = Math.random() > 0.6 ? "❆" : "❄";
-        span.style.left = Math.random() * 100 + "%";
-        span.style.fontSize = (Math.random() * 10 + 8) + "px";
-        span.style.animationDuration = (Math.random() * 8 + 10) + "s";
-        span.style.animationDelay = (Math.random() * 8) + "s";
-        snowLayer.appendChild(span);
+    // 1) LISTE DES CODES AUTORISÉS
+    const VALID_CODES = new Set([
+      "59869","8405","24863","50125","99092","31305","98162","83821","64588","74054",
+      "63644","12395","37492","73198","45945","17598","80369","50934","73470","38443",
+      "5350","40642","65725","96583","29329","62257","82384","29435","57438","59258",
+      "7576","74933","64700","16693","15675","48164","51267","1702","55585","6979",
+      "64497","74563","53580","37033","95100","5459","65538","31101","47795","19308",
+      "31100","95519","15577","8642","79813","31796","98643","98463","80119","27681",
+      "62209","48953","92501","65592","16820","17591","80952","30428","32511","92147",
+      "96883","88562","43800","70318","64246","49063","75126","59184","71924","30552",
+      "63680","65328","89715","14882","69097","17130","70273","18248","70822","73805",
+      "38958","56196","27369","95706","32010","16373","86045","32428","58387","98165",
+      "9312","20762","17973","65660","75550","68485","25336","72068","16370","60954",
+      "16529","60557","76561","48214","7413","90674","93667","12694","9210","74386",
+      "22119","68440","99424","54272","4389","73427","78904","4027","603","16589","79",
+      "29774","92634","47539","30303","88236","32681","38823","71417","6551","82141",
+      "15975","56232","60264","48827","31342","26802","86478","87449","26096","29471",
+      "25039","20335","77236","93976","7012","14740","44370","44299","84033","8393",
+      "16010","778","12269","94371","57544","33891","76067","45224","31963","21228",
+      "27192","14401","37477","57836","36243","73347","69544","11851","45122","8256",
+      "19568","72277","46034","4719","48977","64081","1704","77485","59560","26446",
+      "969","60029","32617","9769","63843","12249","5319","88200","63887","5381","37401",
+      "14571","47371","87427","67528","63634","20918","38951","90994","55902","89117",
+      "11034","32410","72504","31349","65537","40381","1656","40084","11238","14301",
+      "82709","48700","96953","57894","18729","93596","73800","39366","89205","37742",
+      "10139","78538","24038","23751","63067","70023","42844","25467","5281","84207",
+      "53936","52656","45998","2897","43614","3311","20159","19539","82131","10185",
+      "39623","34684","65453","62776","84085","71370","73676","53491","89698","94581",
+      "75062","18650","31777","72846","19644","3608","74799","6036","62403","97029",
+      "72293","30526","59816","6329","84562","19927","14373","852","41251","15982",
+      "31569","35536","7231","16478","78325","38792","95632","44623","18268","66300",
+      "51728","4471","43992","66335","13053","12768","12078","8432","32244","43229",
+      "82428","6381","55279","2276","28004","19680","91140","16245","17600","4496",
+      "90101","19404","61633","60268","57210","58846","78436","69135","72642","35954",
+      "10282","94817","91382","17192","67981","54927","32154","21105","72484","96803",
+      "77243","50078","80519","34405","75066","7951","54752","18003","47714","1596",
+      "32823","36999","72958","83347","16234","70763","18563","85579","93229","63782",
+      "76471","25858","73025","62179","55046","81209","79678","28581","13559","97691",
+      "9970","85091","54945","37367","10074","4199","29919","67145","83293","32256",
+      "83588","52871","4679","72716","43833","3687","23040","7241","77565","26052",
+      "43930","48704","90629","49009","17231","21330","49243","74907","95053","27858",
+      "61665","1971","49327","76160","9663","88231","4637","37766","65128","18373",
+      "1882","97374","54413","16328","30993","97081","97711","22000","53447","14001",
+      "4535","23111","30691","34995","74340","87038","64383","2562","44321","23590",
+      "5173","77954","52994","64388","78443","14392","18337","36571","32576","45292",
+      "88045","11313","43230","40428","18621","62797","14276","25813","9747","79168",
+      "98373"
+    ]);
+
+    // 2) ÉTAT LOCAL DES SCANS
+    let html5QrCode = null;
+    let isPaused = false;
+
+    // tous les scans de cet appareil
+    let scanEvents = []; // {code,status,timestamp}
+    // codes validés au moins une fois
+    let validatedCodes = new Set();
+
+    function saveToStorage() {
+      const payload = {
+        events: scanEvents,
+        validated: Array.from(validatedCodes)
+      };
+      localStorage.setItem("lfiv_noel_scans", JSON.stringify(payload));
+    }
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem("lfiv_noel_scans");
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.events)) scanEvents = parsed.events;
+        if (Array.isArray(parsed.validated)) validatedCodes = new Set(parsed.validated);
+      } catch (e) {
+        console.error("Erreur load storage", e);
       }
-    })();
+    }
 
-    (function init() {
-      const params = new URLSearchParams(window.location.search);
-      const code = (params.get("c") || "").trim();
-      const card = document.getElementById("card");
+    function updateStats() {
+      const ok  = validatedCodes.size;
+      const dup = scanEvents.filter(e => e.status === "duplicate").length;
+      const bad = scanEvents.filter(e => e.status === "invalid").length;
+      document.getElementById("stat-ok").textContent  = ok;
+      document.getElementById("stat-dup").textContent = dup;
+      document.getElementById("stat-bad").textContent = bad;
+    }
 
-      if (!code) {
-        // on laisse l’état erreur
-        return;
+    // extrait le code depuis le contenu du QR
+    function extractCodeFromText(text) {
+      text = (text || "").trim();
+
+      // URL avec ?c=...
+      try {
+        if (text.includes("://")) {
+          const u = new URL(text);
+          const c = u.searchParams.get("c") || u.searchParams.get("code");
+          if (c) return c.trim();
+        }
+      } catch (e) {}
+
+      // juste un code brut
+      if (/^[0-9A-Za-z]+$/.test(text)) {
+        return text;
       }
 
-      // Contenu "succès"
-      card.innerHTML = `
-        <div class="ribbon">Invitation famille 🎅</div>
+      // sinon on tente suite de chiffres
+      const m = text.match(/[0-9]{2,}/);
+      if (m) return m[0];
 
-        <div class="header">
-          <div class="school">Lycée Français International de Vientiane</div>
-          <div class="title">Soirée de Noël</div>
-          <div class="year">2025 • Accès famille</div>
-        </div>
+      return null;
+    }
 
-        <p class="subtitle">
-          Présentez ce <span class="highlight">QR code</span> à l'entrée le soir de la fête.<br>
-          Un seul QR par famille suffit.
-        </p>
-        <p class="tagline">
-          Pour gagner du temps, gardez cette page ouverte ou faites une capture d'écran.
-        </p>
+    // MODAL
+    function showResultModal(info) {
+      const backdrop = document.getElementById("modal-backdrop");
+      const modal    = document.getElementById("modal");
+      const icon     = document.getElementById("modal-icon");
+      const title    = document.getElementById("modal-title");
+      const msg      = document.getElementById("modal-message");
+      const codeEl   = document.getElementById("modal-code");
 
-        <div class="code-pill">
-          <span>Code famille :</span>
-          <span class="code-value">${code}</span>
-        </div>
+      modal.classList.remove("modal-ok","modal-dup","modal-bad");
 
-        <div class="qr-wrapper">
-          <div class="qr-card">
-            <div id="qrcode"></div>
-          </div>
-        </div>
+      if (info.status === "ok") {
+        modal.classList.add("modal-ok");
+        icon.textContent  = "✅";
+        title.textContent = "Entrée validée";
+        msg.textContent   = "La famille est enregistrée pour la soirée.";
+      } else if (info.status === "duplicate") {
+        modal.classList.add("modal-dup");
+        icon.textContent  = "⚠️";
+        title.textContent = "Déjà scanné";
+        msg.textContent   = "Cette famille a déjà été validée à l'entrée.";
+      } else {
+        modal.classList.add("modal-bad");
+        icon.textContent  = "⛔";
+        title.textContent = "Code inconnu";
+        msg.textContent   = "Ce code ne correspond à aucun code famille autorisé.";
+      }
 
-        <p class="qr-caption">
-          Ce QR est <strong>unique</strong> pour votre famille.
-          <small>En cas de souci, l’équipe d’accueil pourra vous aider.</small>
-        </p>
+      codeEl.textContent = info.code || "—";
 
-        <div class="actions">
-          <button type="button" class="btn-download" id="download-btn">
-            📥 Télécharger le QR
-          </button>
-        </div>
+      backdrop.classList.add("show");
+    }
 
-        <div class="footer">
-          Merci de présenter ce QR dès votre arrivée à l'accueil.
-        </div>
-      `;
+    function hideResultModal() {
+      document.getElementById("modal-backdrop").classList.remove("show");
+    }
 
-      const qrContainer = document.getElementById("qrcode");
-      if (!qrContainer) return;
+    // LOGIQUE DE SCAN
+    async function handleScan(decodedText) {
+      if (isPaused) return;
 
-      // URL contenue dans le QR (identique à celle envoyée aux parents)
-      const url = window.location.origin + window.location.pathname + "?c=" + encodeURIComponent(code);
+      const code = extractCodeFromText(decodedText);
+      if (!code) return;
 
-      // QR ultra standard : noir sur fond blanc
-      new QRCode(qrContainer, {
-        text: url,
-        width: 260,
-        height: 260,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
+      // pause pendant le popup
+      isPaused = true;
+      if (html5QrCode) {
+        try { await html5QrCode.pause(true); } catch(e) {}
+      }
+
+      const now = new Date().toISOString();
+      let status;
+
+      if (!VALID_CODES.has(code)) {
+        status = "invalid";
+      } else if (validatedCodes.has(code)) {
+        status = "duplicate";
+      } else {
+        status = "ok";
+        validatedCodes.add(code);
+      }
+
+      scanEvents.push({ code, status, timestamp: now });
+      saveToStorage();
+      updateStats();
+      showResultModal({ code, status });
+    }
+
+    function handleScanError(err) {
+      // on ignore les erreurs de lecture
+    }
+
+    // EXPORT CSV
+    function exportCsv() {
+      if (!scanEvents.length) return;
+
+      const header = ["code","statut","timestamp"].join(",");
+      const rows = scanEvents.map(e =>
+        `"${e.code}","${e.status}","${e.timestamp}"`
+      );
+      const csv = [header, ...rows].join("\n");
+
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href = url;
+      a.download = "lfiv_noel_scans.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // RESET LOCAL
+    function clearLocal() {
+      if (!confirm("Effacer tous les scans enregistrés sur CET appareil ?")) return;
+      scanEvents = [];
+      validatedCodes = new Set();
+      saveToStorage();
+      updateStats();
+    }
+
+    // INIT
+    window.addEventListener("DOMContentLoaded", () => {
+      loadFromStorage();
+      updateStats();
+
+      const cfg = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 }
+      };
+
+      html5QrCode = new Html5Qrcode("reader");
+      html5QrCode.start({ facingMode: "environment" }, cfg, handleScan, handleScanError)
+        .catch(err => console.error("Impossible de démarrer le scanner", err));
+
+      document.getElementById("modal-next").addEventListener("click", async () => {
+        hideResultModal();
+        isPaused = false;
+        if (html5QrCode) {
+          try { await html5QrCode.resume(); } catch(e) {}
+        }
       });
 
-      // bouton de téléchargement
-      const downloadBtn = document.getElementById("download-btn");
-      if (downloadBtn) {
-        downloadBtn.addEventListener("click", function () {
-          const canvas = qrContainer.querySelector("canvas");
-          const img = qrContainer.querySelector("img");
-          let dataUrl = null;
-
-          if (canvas && canvas.toDataURL) {
-            dataUrl = canvas.toDataURL("image/png");
-          } else if (img && img.src) {
-            dataUrl = img.src;
-          }
-
-          if (!dataUrl) return;
-
-          const a = document.createElement("a");
-          a.href = dataUrl;
-          a.download = "LFIV_Noel_QR_" + code + ".png";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        });
-      }
-    })();
+      document.getElementById("btn-export").addEventListener("click", exportCsv);
+      document.getElementById("btn-clear").addEventListener("click", clearLocal);
+    });
   </script>
 </body>
 </html>
