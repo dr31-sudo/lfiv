@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>LFIV Noël – Scanner & CSV</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top, #22c55e 0, #1e3a8a 35%, #020617 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: #fff;
+    }
+    .container {
+      max-width: 960px;
+      width: 100%;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 22px 18px;
+      box-shadow: 0 24px 60px rgba(15,23,42,0.8);
+      color: #0f172a;
+    }
+    .title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #4b5563;
+      margin-bottom: 1rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 1.1rem;
+      margin-top: 0.5rem;
+    }
+    #reader {
+      width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #000;
+      min-height: 260px;
+    }
+    .panel {
+      background: #f9fafb;
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .hint {
+      font-size: 0.84rem;
+      color: #6b7280;
+      margin-bottom: 0.75rem;
+    }
+
+    .status-box {
+      margin-top: 0.2rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+    }
+    .status-ok {
+      background: #dcfce7;
+      border: 1px solid #22c55e;
+      color: #166534;
+    }
+    .status-warn {
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      color: #92400e;
+    }
+    .status-error {
+      background: #fee2e2;
+      border: 1px solid #f87171;
+      color: #991b1b;
+    }
+    .status-code {
+      display:block;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    .status-meta {
+      margin-top: 0.25rem;
+      font-size: 0.78rem;
+      color: #4b5563;
+    }
+
+    .manual {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.7rem;
+    }
+    .manual input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 0.38rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .btn-primary {
+      background: #1d4ed8;
+      color: #fff;
+    }
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+    }
+    .btn-outline {
+      background: #fff;
+      color: #111827;
+      border: 1px solid #d1d5db;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+      color: #4b5563;
+    }
+    .stat-pill {
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+
+    .table-wrapper {
+      margin-top: 0.5rem;
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 0.4rem;
+      flex: 1;
+      overflow: hidden;
+    }
+    .table-inner {
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    th, td {
+      padding: 0.25rem 0.3rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background: #e5e7eb;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 18px 14px;
+      }
+      #reader {
+        min-height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div style="text-align:center;">
+        <span class="badge">Poste de contrôle</span>
+      </div>
+      <div class="title">Contrôle d’entrée – Fête de Noël</div>
+      <p class="subtitle">
+        À utiliser sur une tablette ou un smartphone à l’entrée.<br>
+        Les scans sont stockés localement sur CET appareil.
+      </p>
+
+      <div class="layout">
+        <!-- Caméra -->
+        <div>
+          <div id="reader"></div>
+        </div>
+
+        <!-- Panneau infos -->
+        <div class="panel">
+          <div class="panel-title">Dernier scan</div>
+          <p class="hint">
+            ➜ Le QR peut contenir <strong>un code</strong> (ex. <code>59869</code>)  
+            ou <strong>un lien</strong> du type <code>https://noel.lfiv.org/?c=59869</code>.
+          </p>
+
+          <div id="status-box" class="status-box status-error">
+            En attente de scan…
+          </div>
+
+          <div class="manual">
+            <input id="manual-code" type="text" placeholder="Saisie manuelle (ex. 59869)">
+            <button id="manual-btn" class="btn btn-outline">Valider</button>
+          </div>
+
+          <div class="btn-row">
+            <button id="export-btn" class="btn btn-primary">📥 Exporter CSV</button>
+            <button id="reset-btn" class="btn btn-danger">🗑️ Effacer les données locales</button>
+          </div>
+
+          <div id="stats" class="stats"></div>
+
+          <div class="table-wrapper">
+            <div class="table-inner" id="table-inner">
+              <!-- Table remplie en JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "lfiv_noel_scans_2025";
+
+    function loadScans() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      } catch (e) {
+        console.error("loadScans error", e);
+        return [];
+      }
+    }
+
+    function saveScans(scans) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scans));
+    }
+
+    function extractCode(decodedText) {
+      const txt = (decodedText || "").trim();
+
+      // si c'est une URL
+      try {
+        if (txt.startsWith("http")) {
+          const u = new URL(txt);
+          const c = u.searchParams.get("c")
+                 || u.searchParams.get("code")
+                 || u.searchParams.get("id");
+          if (c) return c.trim();
+        }
+      } catch (e) {
+        // pas une URL
+      }
+
+      // sinon, on prend la première suite de 3+ chiffres
+      const m = txt.match(/(\d{3,})/);
+      if (m) return m[1];
+      return null;
+    }
+
+    function formatTime(d) {
+      return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    }
+
+    function updateStatsAndTable() {
+      const scans = loadScans();
+      const statsEl = document.getElementById("stats");
+      const tableInner = document.getElementById("table-inner");
+
+      if (!scans.length) {
+        statsEl.innerHTML = `
+          <span class="stat-pill">Codes uniques : <strong>0</strong></span>
+          <span class="stat-pill">Scans totaux : <strong>0</strong></span>
+        `;
+        tableInner.innerHTML = `<p class="hint" style="padding:0.3rem 0.2rem;">Aucune entrée pour l’instant.</p>`;
+        return;
+      }
+
+      const totalScans = scans.reduce((s, r) => s + (r.count || 1), 0);
+      statsEl.innerHTML = `
+        <span class="stat-pill">Codes uniques : <strong>${scans.length}</strong></span>
+        <span class="stat-pill">Scans totaux : <strong>${totalScans}</strong></span>
+      `;
+
+      const rows = scans
+        .slice()
+        .sort((a,b) => new Date(b.firstScan) - new Date(a.firstScan))
+        .slice(0, 30);
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>1er scan</th>
+              <th>Dernier</th>
+              <th>Nb scans</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      for (const r of rows) {
+        const first = new Date(r.firstScan);
+        const last = new Date(r.lastScan);
+        html += `
+          <tr>
+            <td>${r.code}</td>
+            <td>${first.toLocaleTimeString("fr-FR")}</td>
+            <td>${last.toLocaleTimeString("fr-FR")}</td>
+            <td>${r.count || 1}</td>
+          </tr>
+        `;
+      }
+      html += `</tbody></table>`;
+      tableInner.innerHTML = html;
+    }
+
+    function handleCode(code, rawText) {
+      const statusBox = document.getElementById("status-box");
+      if (!code) {
+        statusBox.className = "status-box status-error";
+        statusBox.innerHTML =
+          `❌ Code illisible<br>` +
+          `<span class="status-meta">Contenu brut : ${rawText || "(vide)"}</span>`;
+        return;
+      }
+
+      const scans = loadScans();
+      const now = new Date();
+      let record = scans.find(r => r.code === code);
+      let msg = "";
+      let cls = "";
+
+      if (!record) {
+        record = {
+          code: code,
+          firstScan: now.toISOString(),
+          lastScan: now.toISOString(),
+          count: 1
+        };
+        scans.push(record);
+        msg = "✅ Entrée enregistrée";
+        cls = "status-box status-ok";
+      } else {
+        record.lastScan = now.toISOString();
+        record.count = (record.count || 1) + 1;
+        msg = "⚠️ Code déjà scanné";
+        cls = "status-box status-warn";
+      }
+
+      saveScans(scans);
+      updateStatsAndTable();
+
+      const first = new Date(record.firstScan);
+      const last = new Date(record.lastScan);
+      statusBox.className = cls;
+      statusBox.innerHTML =
+        `${msg}<br>` +
+        `<span class="status-code">Code : <strong>${code}</strong></span>` +
+        `<div class="status-meta">1er scan : ${formatTime(first)} – Dernier : ${formatTime(last)} – Nb scans : ${record.count}</div>`;
+    }
+
+    function initScanner() {
+      // init stats & table
+      updateStatsAndTable();
+
+      const html5QrCode = new Html5Qrcode("reader");
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 260, height: 260 } },
+        (decodedText) => {
+          const code = extractCode(decodedText);
+          handleCode(code, decodedText);
+        },
+        (errorMsg) => {
+          // on ignore les erreurs de scan
+        }
+      ).catch(err => {
+        console.error("Erreur démarrage caméra", err);
+        const statusBox = document.getElementById("status-box");
+        statusBox.className = "status-box status-error";
+        statusBox.innerHTML =
+          "Impossible de démarrer la caméra.<br>" +
+          "<span class='status-meta'>Vérifiez les permissions du navigateur.</span>";
+      });
+
+      // saisie manuelle
+      document.getElementById("manual-btn").addEventListener("click", () => {
+        const input = document.getElementById("manual-code");
+        const val = (input.value || "").trim();
+        if (!val) {
+          handleCode(null, "(saisie vide)");
+          return;
+        }
+        handleCode(val, val);
+        input.value = "";
+      });
+
+      // export CSV
+      document.getElementById("export-btn").addEventListener("click", () => {
+        const scans = loadScans();
+        if (!scans.length) {
+          alert("Aucune donnée à exporter.");
+          return;
+        }
+        const header = ["code","firstScanISO","lastScanISO","firstScanLocal","lastScanLocal","count"];
+        const rows = scans.map(r => {
+          const f = new Date(r.firstScan);
+          const l = new Date(r.lastScan);
+          return [
+            r.code,
+            r.firstScan,
+            r.lastScan,
+            f.toLocaleString("fr-FR"),
+            l.toLocaleString("fr-FR"),
+            r.count || 1
+          ];
+        });
+        const csv = [header, ...rows]
+          .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(","))
+          .join("\n");
+
+        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "lfiv_noel_scans.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      // reset
+      document.getElementById("reset-btn").addEventListener("click", () => {
+        if (confirm("Effacer toutes les données locales de scans sur CET appareil ?")) {
+          localStorage.removeItem(STORAGE_KEY);
+          updateStatsAndTable();
+          const statusBox = document.getElementById("status-box");
+          statusBox.className = "status-box status-error";
+          statusBox.innerHTML = "Données effacées. En attente de scan…";
+        }
+      });
+    }
+
+    // init
+    initScanner();
+  </script>
+</body>
+</html>
