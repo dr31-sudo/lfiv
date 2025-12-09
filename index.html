@@ -62,7 +62,7 @@
   </style>
   <script>
     (function () {
-      // 🔹 URL publique de ta Web App Apps Script (SANS /a/macros/lfiv.org)
+      // 👉 URL publique Apps Script - PAS de /a/macros/lfiv.org ici !
       const APPS_SCRIPT_BASE = "https://script.google.com/macros/s/AKfycbwiZKIYlKIgHpneLfkC7BdIhOuIrI5otdoYyVJXfRoRa6SKMGMTzfvlMwUXO36-OpmI/exec";
 
       const params = new URLSearchParams(window.location.search);
@@ -70,7 +70,6 @@
       const type = (params.get("type") || "").trim();
 
       if (!code) {
-        // Pas de ?c= → on affiche un message d'erreur lisible
         document.addEventListener("DOMContentLoaded", () => {
           const card = document.querySelector(".card");
           if (card) {
