@@ -34,3 +34,8 @@ lfiv-noel/
 ├── scan.html    # Page interne : scanner d'entrées + CSV (équipe LFIV)
 ├── CNAME    # CNAME DNS
 └── README.md
+
+📝 Licence
+
+Projet interne LFIV – usage réservé au Lycée Français International de Vientiane.
+Ne pas réutiliser tel quel en production sans adapter la sécurité, les textes et la gestion des données.
