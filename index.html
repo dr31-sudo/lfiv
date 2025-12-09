@@ -2,12 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>LFIV Noël – Redirection</title>
+  <title>LFIV Noël – QR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #8B0000;
@@ -17,17 +15,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
       padding: 1rem;
     }
     .card {
       background: #ffffff;
-      color: #2d3748;
+      color: #1f2933;
       border-radius: 20px;
       padding: 1.5rem 2rem;
       max-width: 480px;
       width: 100%;
       box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      text-align: center;
     }
     .logo {
       font-weight: 900;
@@ -41,70 +39,170 @@
       margin-bottom: 0.75rem;
       color: #4b5563;
     }
-    .loading {
-      font-size: 0.95rem;
-      margin-top: 0.75rem;
-      color: #6b7280;
+    .name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #b91c1c;
+      margin: 0.5rem 0 1rem;
     }
-    h1 {
-      font-size: 1.3rem;
+    .info-line {
+      margin: 0.2rem 0;
+      font-size: 0.95rem;
+    }
+    .qr-box {
+      margin: 1.2rem auto;
+      padding: 0.75rem;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      display: inline-block;
+      background: #f9fafb;
+    }
+    #qrcode {
+      width: 260px;
+      height: 260px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .badge-parent { background: #fee2e2; color: #991b1b; }
+    .badge-ok { background: #dcfce7; color: #166534; }
+    .badge-warn { background: #fef3c7; color: #92400e; }
+
+    .status-title {
+      font-size: 1.5rem;
       margin: 0.5rem 0;
     }
-    p {
-      margin: 0.25rem 0;
+    .status-ok { color: #15803d; }
+    .status-warn { color: #92400e; }
+
+    .time-info {
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: #4b5563;
     }
-    code {
-      background: #f3f4f6;
-      padding: 0.1rem 0.3rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
+
+    .error {
+      font-size: 1.2rem;
+      color: #b91c1c;
+      margin-top: 0.5rem;
     }
   </style>
+
+  <!-- Librairie pour générer le QR côté navigateur -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="logo">LFIV</div>
+    <p class="subtitle">Chargement du QR…</p>
+  </div>
+
   <script>
     (function () {
-      // 👉 URL publique de ta Web App Apps Script
-      const APPS_SCRIPT_BASE = "https://script.google.com/macros/s/AKfycbwYkkNOrOOYtnhZxT2OjzsHUwHeuRl9EVthQ1koQ2JuO-QMAR0uBlkeM_Dh4J60tUKV/exec";
-
       const params = new URLSearchParams(window.location.search);
-      const c = (params.get("c") || "").trim();       // page parents
-      const code = (params.get("code") || "").trim(); // scan entrée
+      const mode = (params.get('mode') || 'parent').toLowerCase();
+      const p = params.get('p'); // JSON encodé
+      const card = document.getElementById('card');
 
-      let targetUrl = "";
+      function showError(msg) {
+        card.innerHTML = `
+          <div class="logo">LFIV</div>
+          <p class="error">❌ QR invalide</p>
+          <p>${msg}</p>
+        `;
+      }
 
-      if (c) {
-        // Page parents : noel.lfiv.org/?c=XXXX
-        targetUrl = APPS_SCRIPT_BASE + "?c=" + encodeURIComponent(c);
-      } else if (code) {
-        // Scan à l'entrée : noel.lfiv.org/?code=XXXX
-        targetUrl = APPS_SCRIPT_BASE + "?code=" + encodeURIComponent(code);
-      } else {
-        document.addEventListener("DOMContentLoaded", () => {
-          const card = document.querySelector(".card");
-          if (card) {
-            card.innerHTML = `
-              <div class="logo">LFIV</div>
-              <h1>❌ QR invalide</h1>
-              <p>Paramètre <code>c</code> ou <code>code</code> manquant.</p>
-              <p style="margin-top:0.5rem;">Exemples attendus :<br>
-              <code>https://noel.lfiv.org/?c=12345</code><br>
-              <code>https://noel.lfiv.org/?code=12345</code></p>
-            `;
-          }
+      if (!p) {
+        showError("Paramètre <code>p</code> manquant dans l'URL.");
+        return;
+      }
+
+      let data;
+      let jsonString;
+      try {
+        jsonString = decodeURIComponent(p);
+        data = JSON.parse(jsonString);
+      } catch (e) {
+        console.error(e);
+        showError("Données illisibles. QR ou lien corrompu.");
+        return;
+      }
+
+      const id = data.id || data.code || "inconnu";
+      const enfant = data.enfant || "";
+      const parent = data.parent || "";
+      const classe = data.classe || "";
+
+      // ---------- MODE PARENT : AFFICHER LE QR ----------
+      if (mode === 'parent') {
+        const scanUrl = window.location.origin + window.location.pathname +
+          '?mode=scan&p=' + encodeURIComponent(jsonString);
+
+        card.innerHTML = `
+          <div class="logo">LFIV</div>
+          <div class="badge badge-parent">Carte famille</div>
+          <div class="name">${parent || "Famille"}</div>
+          <p class="info-line"><strong>Enfant :</strong> ${enfant || "-"}</p>
+          <p class="info-line"><strong>Classe :</strong> ${classe || "-"}</p>
+          <div class="qr-box">
+            <div id="qrcode"></div>
+          </div>
+          <p class="subtitle">Présentez ce QR à l'entrée de la fête.</p>
+        `;
+
+        const qrContainer = document.getElementById('qrcode');
+        new QRCode(qrContainer, {
+          text: scanUrl,
+          width: 260,
+          height: 260,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
         });
         return;
       }
 
-      // Redirection vers Apps Script
-      window.location.replace(targetUrl);
+      // ---------- MODE SCAN : CONTRÔLE ENTRÉE ----------
+      if (mode === 'scan') {
+        const key = 'lfiv_noel_2025_' + id;
+        const existing = localStorage.getItem(key);
+        const now = new Date();
+
+        if (!existing) {
+          // Première entrée
+          localStorage.setItem(key, now.toISOString());
+          card.innerHTML = `
+            <div class="logo">LFIV</div>
+            <div class="badge badge-ok">Entrée enregistrée</div>
+            <h1 class="status-title status-ok">✅ ENTRÉE OK</h1>
+            <div class="name">${parent || "Famille"}</div>
+            <p class="info-line"><strong>Enfant :</strong> ${enfant || "-"}</p>
+            <p class="info-line"><strong>Classe :</strong> ${classe || "-"}</p>
+            <p class="time-info">Scanné à : ${now.toLocaleTimeString()}</p>
+          `;
+        } else {
+          const firstDate = new Date(existing);
+          card.innerHTML = `
+            <div class="logo">LFIV</div>
+            <div class="badge badge-warn">Déjà scanné</div>
+            <h1 class="status-title status-warn">⚠️ DÉJÀ SCANNÉ</h1>
+            <div class="name">${parent || "Famille"}</div>
+            <p class="info-line"><strong>Enfant :</strong> ${enfant || "-"}</p>
+            <p class="info-line"><strong>Classe :</strong> ${classe || "-"}</p>
+            <p class="time-info">Premier scan : ${firstDate.toLocaleTimeString()}</p>
+          `;
+        }
+        return;
+      }
+
+      // ---------- MODE INCONNU ----------
+      showError("Mode inconnu. Utiliser <code>mode=parent</code> ou <code>mode=scan</code>.");
     })();
   </script>
-</head>
-<body>
-  <div class="card">
-    <div class="logo">LFIV</div>
-    <p class="subtitle">Redirection sécurisée vers le contrôleur de QR codes.</p>
-    <h1>Redirection en cours…</h1>
-    <p class="loading">Merci de patienter une seconde.</p>
-  </div>
 </body>
 </html>
