@@ -35,7 +35,7 @@ lfiv-noel/
 ├── CNAME    # CNAME DNS
 └── README.md
 
-📝 Licence
+## 📝 Licence
 
 Projet interne LFIV – usage réservé au Lycée Français International de Vientiane.
 Ne pas réutiliser tel quel en production sans adapter la sécurité, les textes et la gestion des données.
