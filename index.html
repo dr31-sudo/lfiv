@@ -5,7 +5,7 @@
   <title>LFIV Noël 2025 – Votre QR Famille</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Police -->
+  <!-- Polices -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
   <!-- Librairie QR -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -27,39 +27,39 @@
       padding: 16px;
       overflow: hidden;
       background:
-        radial-gradient(circle at top, rgba(248, 250, 252, 0.15), transparent 55%),
-        radial-gradient(circle at bottom, rgba(248, 250, 252, 0.08), transparent 60%),
-        linear-gradient(135deg, #0f172a, #1d3b5c 40%, #14532d 80%);
+        radial-gradient(circle at top, rgba(248, 250, 252, 0.12), transparent 55%),
+        radial-gradient(circle at bottom, rgba(248, 250, 252, 0.06), transparent 60%),
+        linear-gradient(135deg, #7f1d1d, #991b1b 40%, #111827 85%);
       position: relative;
     }
 
-    /* Halo lumineux animé */
+    /* halos animés */
     .glow {
       position: absolute;
-      width: 520px;
-      height: 520px;
+      width: 460px;
+      height: 460px;
       border-radius: 999px;
       background:
-        radial-gradient(circle, rgba(248, 250, 252, 0.08), transparent 55%);
-      filter: blur(2px);
+        radial-gradient(circle, rgba(248, 250, 252, 0.09), transparent 60%);
+      filter: blur(3px);
       animation: glowMove 18s ease-in-out infinite alternate;
       pointer-events: none;
     }
     .glow.glow-2 {
-      width: 380px;
-      height: 380px;
+      width: 360px;
+      height: 360px;
       opacity: 0.8;
       animation-duration: 24s;
       animation-direction: alternate-reverse;
     }
 
     @keyframes glowMove {
-      0%   { transform: translate(-40%, -30%); }
-      50%  { transform: translate(20%, -10%); }
-      100% { transform: translate(40%, 20%); }
+      0%   { transform: translate(-35%, -25%); }
+      50%  { transform: translate(15%, -10%); }
+      100% { transform: translate(35%, 15%); }
     }
 
-    /* Flocons */
+    /* neige */
     .snow {
       position: fixed;
       inset: 0;
@@ -70,10 +70,10 @@
     .snowflake {
       position: absolute;
       top: -10%;
-      color: rgba(248, 250, 252, 0.8);
+      color: rgba(248, 250, 252, 0.9);
       font-size: 0.9rem;
       animation: snowfall linear infinite;
-      text-shadow: 0 0 6px rgba(15, 23, 42, 0.5);
+      text-shadow: 0 0 6px rgba(127, 29, 29, 0.6);
     }
     @keyframes snowfall {
       0%   { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
@@ -91,15 +91,16 @@
 
     .card {
       position: relative;
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(248, 250, 252, 0.98);
       border-radius: 26px;
       padding: 22px 18px 20px;
       box-shadow:
-        0 22px 60px rgba(15, 23, 42, 0.85),
-        0 0 0 1px rgba(148, 163, 184, 0.2);
+        0 22px 60px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(127, 29, 29, 0.35);
       backdrop-filter: blur(12px);
       overflow: hidden;
       animation: cardIn 0.7s ease-out both;
+      color: #111827;
     }
 
     @keyframes cardIn {
@@ -112,15 +113,15 @@
       position: absolute;
       top: 12px;
       left: -60px;
-      background: linear-gradient(135deg, #fbbf24, #f97316);
-      color: #111827;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      color: #7f1d1d;
       padding: 7px 60px;
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       transform: rotate(-12deg);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
     }
 
     .header {
@@ -133,8 +134,8 @@
       font-size: 0.8rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #e5e7eb;
-      opacity: 0.85;
+      color: #b91c1c;
+      opacity: 0.95;
       margin-bottom: 4px;
     }
 
@@ -142,15 +143,15 @@
       font-family: "Playfair Display", serif;
       font-size: 1.9rem;
       font-weight: 900;
-      color: #f9fafb;
-      text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      color: #7f1d1d;
+      text-shadow: 0 2px 6px rgba(248, 113, 113, 0.4);
       margin-bottom: 2px;
     }
 
     .year {
       font-size: 0.92rem;
       font-weight: 600;
-      color: #a5b4fc;
+      color: #ef4444;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
@@ -158,19 +159,19 @@
     .subtitle {
       margin-top: 14px;
       font-size: 0.92rem;
-      color: #cbd5f5;
+      color: #374151;
       line-height: 1.4;
     }
 
     .highlight {
-      color: #facc15;
+      color: #b91c1c;
       font-weight: 600;
     }
 
     .tagline {
       margin-top: 8px;
       font-size: 0.8rem;
-      color: #9ca3af;
+      color: #6b7280;
     }
 
     .code-pill {
@@ -179,9 +180,9 @@
       justify-content: center;
       padding: 6px 12px;
       border-radius: 999px;
-      background: rgba(15, 118, 110, 0.25);
-      border: 1px solid rgba(34, 197, 94, 0.45);
-      color: #bbf7d0;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #7f1d1d;
       font-size: 0.82rem;
       font-weight: 600;
       margin: 16px auto 0;
@@ -190,7 +191,7 @@
     .code-pill span.code-value {
       font-family: "Montserrat", monospace;
       font-weight: 700;
-      color: #fefce8;
+      color: #b91c1c;
     }
 
     .qr-wrapper {
@@ -203,12 +204,10 @@
       position: relative;
       padding: 12px;
       border-radius: 22px;
-      background:
-        radial-gradient(circle at top, #fef9c3, transparent 65%),
-        #020617;
+      background: #fef2f2;
       box-shadow:
-        0 12px 35px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(148, 163, 184, 0.35);
+        0 12px 35px rgba(127, 29, 29, 0.6),
+        0 0 0 1px rgba(248, 113, 113, 0.6);
       animation: qrIn 0.7s ease-out 0.15s both;
     }
 
@@ -217,71 +216,91 @@
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .qr-halo {
-      position: absolute;
-      inset: -25%;
-      background:
-        radial-gradient(circle, rgba(252, 211, 77, 0.07), transparent 60%);
-      filter: blur(4px);
-      pointer-events: none;
-    }
-
     #qrcode {
       position: relative;
       width: 260px;
       height: 260px;
-      border-radius: 18px;
+      border-radius: 14px;
       overflow: hidden;
-      background: #020617;
+      background: #ffffff; /* important pour contraste max */
     }
 
     .qr-caption {
       text-align: center;
       font-size: 0.8rem;
-      color: #e5e7eb;
+      color: #4b5563;
       margin-top: 8px;
-      opacity: 0.92;
+      opacity: 0.95;
     }
 
     .qr-caption small {
       display: block;
       font-size: 0.76rem;
-      color: #9ca3af;
+      color: #6b7280;
       margin-top: 2px;
+    }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+    }
+    .btn-download {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #b91c1c, #dc2626);
+      color: #fef2f2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(185, 28, 28, 0.5);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-download:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(185, 28, 28, 0.6);
+    }
+    .btn-download:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 10px rgba(185, 28, 28, 0.5);
     }
 
     .footer {
       margin-top: 14px;
       font-size: 0.78rem;
       text-align: center;
-      color: #9ca3af;
+      color: #6b7280;
       line-height: 1.4;
-    }
-
-    .footer code {
-      background: rgba(15, 23, 42, 0.95);
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-size: 0.76rem;
-      border: 1px solid rgba(148, 163, 184, 0.4);
     }
 
     /* État erreur */
     .error-title {
       font-size: 1.3rem;
       font-weight: 700;
-      color: #fecaca;
+      color: #b91c1c;
       margin-top: 10px;
       margin-bottom: 4px;
     }
     .error-text {
       font-size: 0.9rem;
-      color: #fecaca;
+      color: #7f1d1d;
       margin-bottom: 10px;
     }
     .error-hint {
       font-size: 0.8rem;
-      color: #e5e7eb;
+      color: #6b7280;
+    }
+    .error-hint code {
+      background: #fee2e2;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.76rem;
+      border: 1px solid #fecaca;
+      color: #7f1d1d;
     }
 
     @media (max-width: 480px) {
@@ -327,7 +346,7 @@
         Nous n’avons pas trouvé votre <span class="highlight">code famille</span>.
       </p>
       <p class="tagline">
-        Le lien doit ressembler à&nbsp;:
+        Le lien doit ressembler à :
         <br><code>https://noel.lfiv.org/?c=12345</code>
       </p>
     </div>
@@ -356,13 +375,13 @@
       const card = document.getElementById("card");
 
       if (!code) {
-        // On laisse l'état erreur déjà présent dans le HTML
+        // on laisse l’état erreur
         return;
       }
 
-      // Contenu "succès" avec QR
+      // Contenu "succès"
       card.innerHTML = `
-        <div class="ribbon">Invitation famille</div>
+        <div class="ribbon">Invitation famille 🎅</div>
 
         <div class="header">
           <div class="school">Lycée Français International de Vientiane</div>
@@ -385,36 +404,66 @@
 
         <div class="qr-wrapper">
           <div class="qr-card">
-            <div class="qr-halo"></div>
             <div id="qrcode"></div>
           </div>
         </div>
 
         <p class="qr-caption">
           Ce QR est <strong>unique</strong> pour votre famille.
-          <small>Il peut être scanné depuis un téléphone ou un QR imprimé.</small>
+          <small>En cas de souci, l’équipe d’accueil pourra vous aider.</small>
         </p>
 
+        <div class="actions">
+          <button type="button" class="btn-download" id="download-btn">
+            📥 Télécharger le QR
+          </button>
+        </div>
+
         <div class="footer">
-          En cas de problème, merci de vous adresser à l'équipe d'accueil.<br>
-          <code>noel.lfiv.org</code>
+          Merci de présenter ce QR dès votre arrivée à l'accueil.
         </div>
       `;
 
-      // Génération du QR avec l'URL complète (pour le scanner)
       const qrContainer = document.getElementById("qrcode");
       if (!qrContainer) return;
 
+      // URL contenue dans le QR (identique à celle envoyée aux parents)
       const url = window.location.origin + window.location.pathname + "?c=" + encodeURIComponent(code);
 
+      // QR ultra standard : noir sur fond blanc
       new QRCode(qrContainer, {
         text: url,
         width: 260,
         height: 260,
-        colorDark: "#f9fafb",
-        colorLight: "#020617",
+        colorDark: "#000000",
+        colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
+
+      // bouton de téléchargement
+      const downloadBtn = document.getElementById("download-btn");
+      if (downloadBtn) {
+        downloadBtn.addEventListener("click", function () {
+          const canvas = qrContainer.querySelector("canvas");
+          const img = qrContainer.querySelector("img");
+          let dataUrl = null;
+
+          if (canvas && canvas.toDataURL) {
+            dataUrl = canvas.toDataURL("image/png");
+          } else if (img && img.src) {
+            dataUrl = img.src;
+          }
+
+          if (!dataUrl) return;
+
+          const a = document.createElement("a");
+          a.href = dataUrl;
+          a.download = "LFIV_Noel_QR_" + code + ".png";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+      }
     })();
   </script>
 </body>
