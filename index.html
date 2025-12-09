@@ -2,206 +2,531 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>LFIV Noël – QR</title>
+  <title>LFIV Noël – QR & Scanner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts & libs -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #8B0000;
-      color: #ffffff;
+      font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #7e22ce);
       min-height: 100vh;
-      margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: 1.5rem;
+      color: #fff;
+    }
+    .container {
+      max-width: 960px;
+      width: 100%;
     }
     .card {
       background: #ffffff;
-      color: #1f2933;
       border-radius: 20px;
-      padding: 1.5rem 2rem;
-      max-width: 480px;
-      width: 100%;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-      text-align: center;
+      padding: 24px 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      color: #111827;
     }
-    .logo {
-      font-weight: 900;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: #b91c1c;
-      letter-spacing: 2px;
+    .title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.25rem;
     }
     .subtitle {
+      text-align: center;
       font-size: 0.95rem;
-      margin-bottom: 0.75rem;
       color: #4b5563;
+      margin-bottom: 1.25rem;
     }
-    .name {
-      font-size: 1.4rem;
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .badge-parent { background:#fee2e2; color:#991b1b; }
+    .badge-scanner { background:#dbeafe; color:#1d4ed8; }
+    .code {
+      font-size: 1.3rem;
       font-weight: 700;
-      color: #b91c1c;
-      margin: 0.5rem 0 1rem;
-    }
-    .info-line {
-      margin: 0.2rem 0;
-      font-size: 0.95rem;
+      margin-top: 0.5rem;
+      text-align: center;
     }
     .qr-box {
       margin: 1.2rem auto;
       padding: 0.75rem;
       border-radius: 16px;
       border: 1px solid #e5e7eb;
-      display: inline-block;
       background: #f9fafb;
+      display: inline-block;
     }
-    #qrcode {
+    #parent-qrcode {
       width: 260px;
       height: 260px;
     }
-    .badge {
-      display: inline-block;
-      padding: 0.35rem 0.8rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    .badge-parent { background: #fee2e2; color: #991b1b; }
-    .badge-ok { background: #dcfce7; color: #166534; }
-    .badge-warn { background: #fef3c7; color: #92400e; }
-
-    .status-title {
-      font-size: 1.5rem;
-      margin: 0.5rem 0;
-    }
-    .status-ok { color: #15803d; }
-    .status-warn { color: #92400e; }
-
-    .time-info {
-      margin-top: 0.6rem;
-      font-size: 0.85rem;
+    .info-text {
+      text-align: center;
+      font-size: 0.9rem;
       color: #4b5563;
     }
+    .hidden { display: none; }
 
-    .error {
-      font-size: 1.2rem;
-      color: #b91c1c;
+    /* Scanner layout */
+    .scanner-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+    #reader {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+    }
+    .panel {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #111827;
+    }
+    .hint {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 0.75rem;
+    }
+    .status-box {
       margin-top: 0.5rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+    .status-ok {
+      background:#dcfce7;
+      border:1px solid #22c55e;
+      color:#166534;
+    }
+    .status-warn {
+      background:#fef3c7;
+      border:1px solid #fbbf24;
+      color:#92400e;
+    }
+    .status-error {
+      background:#fee2e2;
+      border:1px solid #f87171;
+      color:#991b1b;
+    }
+    .status-code {
+      font-weight:700;
+      margin-top:0.3rem;
+    }
+
+    .stats-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.5rem;
+      font-size:0.85rem;
+      margin-top:0.5rem;
+      color:#4b5563;
+    }
+    .stat-pill {
+      padding:0.2rem 0.55rem;
+      border-radius:999px;
+      background:#e5e7eb;
+    }
+    .btn-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.5rem;
+      margin-top:0.9rem;
+    }
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .btn {
+      border:none;
+      border-radius:999px;
+      padding:0.4rem 0.9rem;
+      font-size:0.85rem;
+      font-weight:600;
+      display:inline-flex;
+      align-items:center;
+      gap:0.4rem;
+    }
+    .btn-primary {
+      background:#1d4ed8;
+      color:#fff;
+    }
+    .btn-danger {
+      background:#dc2626;
+      color:#fff;
+    }
+    .btn-outline {
+      background:#fff;
+      color:#111827;
+      border:1px solid #d1d5db;
+    }
+    .manual {
+      margin-top:0.75rem;
+      display:flex;
+      gap:0.4rem;
+    }
+    .manual input {
+      flex:1;
+      border-radius:999px;
+      border:1px solid #d1d5db;
+      padding:0.35rem 0.75rem;
+      font-size:0.85rem;
+    }
+
+    .table {
+      margin-top:0.6rem;
+      max-height:190px;
+      overflow-y:auto;
+      font-size:0.82rem;
+    }
+    table {
+      width:100%;
+      border-collapse:collapse;
+    }
+    th, td {
+      padding:0.25rem 0.3rem;
+      text-align:left;
+      border-bottom:1px solid #e5e7eb;
+    }
+    th {
+      position:sticky;
+      top:0;
+      background:#f9fafb;
+      font-weight:600;
+      font-size:0.78rem;
+    }
+
+    @media (max-width: 768px) {
+      .scanner-layout {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 18px 14px;
+      }
+      #parent-qrcode {
+        width: 220px;
+        height: 220px;
+      }
     }
   </style>
-
-  <!-- Librairie pour générer le QR côté navigateur -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
-  <div class="card" id="card">
-    <div class="logo">LFIV</div>
-    <p class="subtitle">Chargement du QR…</p>
+  <div class="container">
+    <!-- MODE PARENT -->
+    <div id="parent-view" class="card hidden">
+      <div class="badge badge-parent">Carte famille</div>
+      <div class="title">Fête de Noël – LFIV</div>
+      <p class="subtitle">Montrez ce QR à l’entrée le soir de la fête.</p>
+
+      <p class="code" id="parent-code"></p>
+
+      <div class="qr-box">
+        <div id="parent-qrcode"></div>
+      </div>
+
+      <p class="info-text">
+        Si le QR ne s’affiche pas, vérifiez que le lien contient bien un code
+        (ex. <code>?c=59869</code>).
+      </p>
+    </div>
+
+    <!-- MODE SCANNER -->
+    <div id="scanner-view" class="card hidden">
+      <div class="badge badge-scanner">Poste de contrôle</div>
+      <div class="title">Contrôle d’entrée – Fête de Noël</div>
+      <p class="subtitle">
+        Utiliser sur une tablette / téléphone à l’entrée.  
+        Scanner les QR des familles, les entrées sont mémorisées localement.
+      </p>
+
+      <div class="scanner-layout">
+        <!-- Caméra -->
+        <div>
+          <div id="reader"></div>
+        </div>
+
+        <!-- Panneau infos -->
+        <div class="panel">
+          <div class="panel-title">Résultat du dernier scan</div>
+          <div class="hint">
+            ➜ Le QR peut contenir soit un code (ex. <code>59869</code>),  
+            soit une URL <code>https://noel.lfiv.org/?c=59869</code>.
+          </div>
+
+          <div id="status-box" class="status-box status-error">
+            En attente de scan…
+          </div>
+
+          <div class="manual">
+            <input id="manual-code" type="text" placeholder="Saisir un code manuellement (ex. 59869)">
+            <button class="btn btn-outline" id="manual-btn">Valider</button>
+          </div>
+
+          <div class="stats-row" id="stats-row">
+            <!-- stats remplies en JS -->
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" id="export-btn">📥 Exporter CSV</button>
+            <button class="btn btn-danger" id="reset-btn">🗑️ Effacer les données locales</button>
+          </div>
+
+          <div class="table" id="last-table">
+            <!-- tableau dernières entrées -->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const mode = (params.get('mode') || 'parent').toLowerCase();
-      const p = params.get('p'); // JSON encodé
-      const card = document.getElementById('card');
+    const STORAGE_KEY = "lfiv_noel_scans_2025";
 
-      function showError(msg) {
-        card.innerHTML = `
-          <div class="logo">LFIV</div>
-          <p class="error">❌ QR invalide</p>
-          <p>${msg}</p>
-        `;
-      }
-
-      if (!p) {
-        showError("Paramètre <code>p</code> manquant dans l'URL.");
-        return;
-      }
-
-      let data;
-      let jsonString;
+    function loadScans() {
       try {
-        jsonString = decodeURIComponent(p);
-        data = JSON.parse(jsonString);
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
       } catch (e) {
-        console.error(e);
-        showError("Données illisibles. QR ou lien corrompu.");
-        return;
+        console.error("loadScans error", e);
+        return [];
       }
+    }
 
-      const id = data.id || data.code || "inconnu";
-      const enfant = data.enfant || "";
-      const parent = data.parent || "";
-      const classe = data.classe || "";
+    function saveScans(scans) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scans));
+    }
 
-      // ---------- MODE PARENT : AFFICHER LE QR ----------
-      if (mode === 'parent') {
-        const scanUrl = window.location.origin + window.location.pathname +
-          '?mode=scan&p=' + encodeURIComponent(jsonString);
-
-        card.innerHTML = `
-          <div class="logo">LFIV</div>
-          <div class="badge badge-parent">Carte famille</div>
-          <div class="name">${parent || "Famille"}</div>
-          <p class="info-line"><strong>Enfant :</strong> ${enfant || "-"}</p>
-          <p class="info-line"><strong>Classe :</strong> ${classe || "-"}</p>
-          <div class="qr-box">
-            <div id="qrcode"></div>
-          </div>
-          <p class="subtitle">Présentez ce QR à l'entrée de la fête.</p>
-        `;
-
-        const qrContainer = document.getElementById('qrcode');
-        new QRCode(qrContainer, {
-          text: scanUrl,
-          width: 260,
-          height: 260,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H
-        });
-        return;
-      }
-
-      // ---------- MODE SCAN : CONTRÔLE ENTRÉE ----------
-      if (mode === 'scan') {
-        const key = 'lfiv_noel_2025_' + id;
-        const existing = localStorage.getItem(key);
-        const now = new Date();
-
-        if (!existing) {
-          // Première entrée
-          localStorage.setItem(key, now.toISOString());
-          card.innerHTML = `
-            <div class="logo">LFIV</div>
-            <div class="badge badge-ok">Entrée enregistrée</div>
-            <h1 class="status-title status-ok">✅ ENTRÉE OK</h1>
-            <div class="name">${parent || "Famille"}</div>
-            <p class="info-line"><strong>Enfant :</strong> ${enfant || "-"}</p>
-            <p class="info-line"><strong>Classe :</strong> ${classe || "-"}</p>
-            <p class="time-info">Scanné à : ${now.toLocaleTimeString()}</p>
-          `;
-        } else {
-          const firstDate = new Date(existing);
-          card.innerHTML = `
-            <div class="logo">LFIV</div>
-            <div class="badge badge-warn">Déjà scanné</div>
-            <h1 class="status-title status-warn">⚠️ DÉJÀ SCANNÉ</h1>
-            <div class="name">${parent || "Famille"}</div>
-            <p class="info-line"><strong>Enfant :</strong> ${enfant || "-"}</p>
-            <p class="info-line"><strong>Classe :</strong> ${classe || "-"}</p>
-            <p class="time-info">Premier scan : ${firstDate.toLocaleTimeString()}</p>
-          `;
+    function extractCode(decodedText) {
+      const txt = (decodedText || "").trim();
+      // Si c'est une URL avec ?c=
+      try {
+        if (txt.startsWith("http")) {
+          const u = new URL(txt);
+          const c = u.searchParams.get("c") || u.searchParams.get("code") || u.searchParams.get("id");
+          if (c) return c.trim();
         }
+      } catch (e) {
+        // pas une URL
+      }
+      // Sinon, on tente de récupérer une suite de chiffres
+      const m = txt.match(/(\d{3,})/);
+      if (m) return m[1];
+      return null;
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second:"2-digit" });
+    }
+
+    function updateStatsView() {
+      const statsRow = document.getElementById("stats-row");
+      const scans = loadScans();
+      const totalScans = scans.reduce((s, r) => s + (r.count || 1), 0);
+      const uniqueCodes = scans.length;
+
+      statsRow.innerHTML = `
+        <span class="stat-pill">Codes uniques : <strong>${uniqueCodes}</strong></span>
+        <span class="stat-pill">Scans totaux : <strong>${totalScans}</strong></span>
+      `;
+
+      const lastTable = document.getElementById("last-table");
+      if (scans.length === 0) {
+        lastTable.innerHTML = `<p class="hint">Aucune entrée pour l’instant.</p>`;
         return;
       }
 
-      // ---------- MODE INCONNU ----------
-      showError("Mode inconnu. Utiliser <code>mode=parent</code> ou <code>mode=scan</code>.");
+      const last = scans
+        .slice()
+        .sort((a,b) => new Date(b.firstScan) - new Date(a.firstScan))
+        .slice(0, 15);
+
+      let html = `<table><thead>
+        <tr><th>Code</th><th>1er scan</th><th>Dernier</th><th>Nb scans</th></tr>
+      </thead><tbody>`;
+
+      for (const r of last) {
+        const first = new Date(r.firstScan);
+        const lastT = new Date(r.lastScan);
+        html += `<tr>
+          <td>${r.code}</td>
+          <td>${first.toLocaleTimeString("fr-FR")}</td>
+          <td>${lastT.toLocaleTimeString("fr-FR")}</td>
+          <td>${r.count || 1}</td>
+        </tr>`;
+      }
+      html += `</tbody></table>`;
+      lastTable.innerHTML = html;
+    }
+
+    function handleCodeScanned(code, from) {
+      const statusBox = document.getElementById("status-box");
+      if (!code) {
+        statusBox.className = "status-box status-error";
+        statusBox.innerHTML = `❌ Code illisible<br><span class="status-code">Contenu : ${from}</span>`;
+        return;
+      }
+
+      const now = new Date();
+      const scans = loadScans();
+      let record = scans.find(r => r.code === code);
+      let statusText = "";
+      let className = "";
+
+      if (!record) {
+        record = {
+          code: code,
+          firstScan: now.toISOString(),
+          lastScan: now.toISOString(),
+          count: 1
+        };
+        scans.push(record);
+        statusText = `✅ Entrée enregistrée`;
+        className = "status-box status-ok";
+      } else {
+        record.lastScan = now.toISOString();
+        record.count = (record.count || 1) + 1;
+        statusText = `⚠️ Code déjà scanné`;
+        className = "status-box status-warn";
+      }
+
+      saveScans(scans);
+      updateStatsView();
+
+      const firstDate = new Date(record.firstScan);
+      statusBox.className = className;
+      statusBox.innerHTML =
+        `${statusText}<br>` +
+        `<span class="status-code">Code : <strong>${code}</strong></span><br>` +
+        `<span style="font-size:0.8rem;">1er scan : ${formatTime(firstDate)} – Scans totaux : ${record.count}</span>`;
+    }
+
+    function initScanner() {
+      const readerElem = document.getElementById("reader");
+      const html5QrCode = new Html5Qrcode("reader");
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText) => {
+          const code = extractCode(decodedText);
+          handleCodeScanned(code, decodedText);
+        },
+        (err) => {
+          // ignore
+        }
+      ).catch(e => {
+        console.error("Scanner error", e);
+        document.getElementById("status-box").className = "status-box status-error";
+        document.getElementById("status-box").innerText =
+          "Impossible de démarrer la caméra. Vérifiez les permissions navigateur.";
+      });
+
+      // bouton manuel
+      document.getElementById("manual-btn").addEventListener("click", () => {
+        const val = document.getElementById("manual-code").value.trim();
+        handleCodeScanned(val || null, val || "(saisie vide)");
+      });
+
+      // export CSV
+      document.getElementById("export-btn").addEventListener("click", () => {
+        const scans = loadScans();
+        if (!scans.length) {
+          alert("Aucune donnée à exporter.");
+          return;
+        }
+        const header = ["code","firstScanISO","lastScanISO","firstScanLocal","lastScanLocal","count"];
+        const rows = scans.map(r => {
+          const first = new Date(r.firstScan);
+          const last = new Date(r.lastScan);
+          return [
+            r.code,
+            r.firstScan,
+            r.lastScan,
+            first.toLocaleString("fr-FR"),
+            last.toLocaleString("fr-FR"),
+            r.count || 1
+          ];
+        });
+        const csv = [header, ...rows]
+          .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(","))
+          .join("\n");
+        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "lfiv_noel_scans.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      // reset stockage
+      document.getElementById("reset-btn").addEventListener("click", () => {
+        if (confirm("Effacer toutes les données locales de scans sur CET appareil ?")) {
+          localStorage.removeItem(STORAGE_KEY);
+          updateStatsView();
+          const statusBox = document.getElementById("status-box");
+          statusBox.className = "status-box status-error";
+          statusBox.innerText = "Données effacées. En attente de scan…";
+        }
+      });
+
+      updateStatsView();
+    }
+
+    function initParent(code) {
+      document.getElementById("parent-view").classList.remove("hidden");
+      document.getElementById("parent-code").innerText = "Code : " + code;
+
+      const qrContainer = document.getElementById("parent-qrcode");
+      qrContainer.innerHTML = "";
+      const url = window.location.origin + window.location.pathname + "?c=" + encodeURIComponent(code);
+      new QRCode(qrContainer, {
+        text: url,
+        width: 260,
+        height: 260,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    (function main() {
+      const params = new URLSearchParams(window.location.search);
+      const c = (params.get("c") || "").trim();
+
+      if (c) {
+        // MODE PARENT
+        document.getElementById("scanner-view").classList.add("hidden");
+        initParent(c);
+      } else {
+        // MODE SCANNER
+        document.getElementById("scanner-view").classList.remove("hidden");
+        initScanner();
+      }
     })();
   </script>
 </body>
