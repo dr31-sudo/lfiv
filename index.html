@@ -2,11 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>LFIV – Fête de Noël – QR Famille</title>
+  <title>LFIV – Soirée de Noël – QR Famille</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fonts FR / EN / Lao -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -19,48 +19,49 @@
     }
 
     :root {
-      --red-deep: #7f1d1d;
-      --red-main: #b91c1c;
-      --red-soft: #fecaca;
-      --bg-deep: #0b1120;
-      --card-bg: #f9fafb;
-      --card-border: rgba(248, 113, 113, 0.55);
-      --text-main: #111827;
-      --text-muted: #4b5563;
-      --accent-soft: #e5e7eb;
+      --bg-top: #111827;
+      --bg-bottom: #7f1d1d;
+      --card-bg: #020617;
+      --card-inner: #020617;
+      --accent-gold: #fbbf24;
+      --accent-green: #15803d;
+      --accent-red: #dc2626;
+      --text-main: #f9fafb;
+      --text-soft: #e5e7eb;
+      --text-muted: #9ca3af;
     }
 
     body {
       min-height: 100vh;
-      font-family: "Montserrat", "Noto Sans Lao", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(254, 226, 226, 0.95), transparent 55%),
-        radial-gradient(circle at bottom, rgba(127, 29, 29, 0.85), transparent 60%),
-        linear-gradient(135deg, #020617, var(--bg-deep));
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      color: #f9fafb;
+      font-family: "Montserrat", "Noto Sans Lao", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(248, 113, 113, 0.35), transparent 60%),
+        radial-gradient(circle at 80% 100%, rgba(185, 28, 28, 0.45), transparent 60%),
+        linear-gradient(145deg, var(--bg-top), var(--bg-bottom));
+      color: var(--text-main);
       position: relative;
       overflow: hidden;
     }
 
-    /* Flocons discrets */
+    /* Flocons */
     .snowflake {
       position: fixed;
       top: -10px;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 1rem;
+      color: rgba(248, 250, 252, 0.85);
+      font-size: 0.9rem;
       pointer-events: none;
       animation: snowfall linear infinite;
       z-index: 1;
     }
 
     @keyframes snowfall {
-      0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
+      0%   { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
 
@@ -68,90 +69,77 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 540px;
+      max-width: 520px;
     }
 
     .card {
-      background: var(--card-bg);
-      border-radius: 24px;
-      padding: 20px 20px 22px;
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.9);
-      border: 1px solid var(--card-border);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background:
-        linear-gradient(145deg, #ffffff, #fee2e2);
-      border: 1px solid rgba(185, 28, 28, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 16px rgba(185, 28, 28, 0.35);
       position: relative;
+      background: radial-gradient(circle at top, #111827 0%, #020617 55%);
+      border-radius: 26px;
+      padding: 26px 22px 22px;
+      box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(248, 250, 252, 0.03);
+      border: 1px solid rgba(248, 113, 113, 0.4);
       overflow: hidden;
     }
 
-    .brand-mark::before {
-      content: "";
+    /* Ruban invitation */
+    .ribbon {
       position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 20% 0, rgba(248, 250, 252, 0.8), transparent 55%);
-      opacity: 0.9;
-    }
-
-    .brand-initials {
-      position: relative;
+      top: 18px;
+      left: -32px;
+      transform: rotate(-6deg);
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #111827;
+      padding: 6px 32px;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       font-weight: 800;
-      letter-spacing: 0.02em;
-      color: var(--red-main);
-      font-size: 0.9rem;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
     }
 
-    .brand-text {
-      display: flex;
-      flex-direction: column;
+    .card-inner {
+      margin-top: 18px;
     }
 
-    .brand-text .school {
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--text-main);
+    .card-header {
+      text-align: center;
+      margin-bottom: 18px;
     }
 
-    .brand-text .school span {
-      font-weight: 800;
-      color: var(--red-main);
-    }
-
-    .brand-text .event {
+    .school-name {
       font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .event-title {
+      font-family: "Playfair Display", serif;
+      font-size: 1.9rem;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .event-subtitle {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #e5e7eb;
     }
 
     .lang-switch {
+      position: absolute;
+      top: 18px;
+      right: 20px;
       display: inline-flex;
       border-radius: 999px;
       padding: 2px;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(248, 250, 252, 0.18);
       gap: 2px;
     }
 
@@ -159,15 +147,15 @@
       border-radius: 999px;
       border: none;
       background: transparent;
-      padding: 4px 9px;
-      font-size: 0.75rem;
+      padding: 3px 8px;
+      font-size: 0.7rem;
       font-weight: 600;
-      color: #374151;
+      color: #e5e7eb;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      min-width: 62px;
+      gap: 5px;
+      min-width: 58px;
       justify-content: center;
       transition: background 0.15s ease, color 0.15s ease;
     }
@@ -177,44 +165,71 @@
     }
 
     .lang-label {
-      font-size: 0.73rem;
+      font-size: 0.72rem;
     }
 
     .lang-btn.active {
-      background: linear-gradient(135deg, #b91c1c, #dc2626);
+      background: linear-gradient(135deg, #b91c1c, #ef4444);
       color: #f9fafb;
-      box-shadow: 0 3px 8px rgba(185, 28, 28, 0.45);
+      box-shadow: 0 3px 9px rgba(239, 68, 68, 0.5);
     }
 
-    h1 {
-      font-size: 1.35rem;
-      color: var(--text-main);
-      text-align: center;
-      margin-bottom: 4px;
-      font-weight: 800;
-    }
-
-    .subtitle {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      text-align: center;
+    .body-text {
       margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      line-height: 1.45;
     }
 
-    .qr-card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 18px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    .body-text strong {
+      color: #facc15;
+      font-weight: 600;
+    }
+
+    .code-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: radial-gradient(circle at top left, #22c55e, #14532d);
+      box-shadow: 0 12px 26px rgba(34, 197, 94, 0.4);
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: #ecfdf5;
+    }
+
+    .code-label {
+      margin-right: 6px;
+      opacity: 0.9;
+    }
+
+    .code-value {
+      font-weight: 700;
+    }
+
+    .qr-wrapper {
+      margin-top: 4px;
+      margin-bottom: 14px;
+      padding: 14px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(248, 250, 252, 0.22), transparent 55%),
+        radial-gradient(circle at bottom, rgba(127, 29, 29, 0.4), transparent 55%),
+        #020617;
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.25);
       display: flex;
       justify-content: center;
-      margin-bottom: 14px;
     }
 
     #qrcode {
       width: 260px;
       height: 260px;
+      border-radius: 18px;
+      padding: 10px;
+      background: radial-gradient(circle at top left, #fefce8, #e5e7eb);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.9),
+        0 0 0 2px rgba(15, 23, 42, 0.7);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -222,101 +237,127 @@
 
     #qrcode canvas,
     #qrcode img {
-      max-width: 260px;
-      max-height: 260px;
+      max-width: 220px;
+      max-height: 220px;
       display: block;
     }
 
-    .text-block {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .line {
-      font-size: 0.9rem;
-      color: var(--text-main);
-      margin-bottom: 4px;
-    }
-
-    .code-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .code-value {
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--red-main);
-    }
-
-    .btn-row {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .footer-text {
       margin-top: 8px;
+      font-size: 0.86rem;
+      color: var(--text-soft);
+      text-align: center;
     }
 
-    .btn-primary {
-      border-radius: 999px;
-      border: none;
-      padding: 10px 14px;
-      font-size: 0.95rem;
+    .footer-text strong {
       font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(135deg, #b91c1c, #dc2626);
-      color: #f9fafb;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.45);
+      color: #fee2e2;
     }
 
-    .btn-primary span.icon {
-      font-size: 1.1rem;
-    }
-
-    .btn-primary:active {
-      transform: translateY(1px);
-      box-shadow: 0 4px 10px rgba(185, 28, 28, 0.4);
-    }
-
-    .small-note {
+    .hint {
+      margin-top: 6px;
       font-size: 0.78rem;
       color: var(--text-muted);
       text-align: center;
-      margin-top: 2px;
     }
 
-    .error {
-      text-align: center;
-      padding: 24px 10px 12px;
+    .btn-actions {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
     }
 
-    .error h2 {
-      font-size: 1.1rem;
-      color: var(--red-main);
-      margin-bottom: 6px;
-    }
-
-    .error p {
+    .btn-pill {
+      border-radius: 999px;
+      border: none;
+      padding: 10px 18px;
       font-size: 0.9rem;
-      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
 
-    @media (max-width: 480px) {
+    .btn-pill .icon {
+      font-size: 1.1rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: #f9fafb;
+      box-shadow: 0 12px 28px rgba(220, 38, 38, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      border: 1px solid rgba(248, 250, 252, 0.25);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-pill:active {
+      transform: translateY(1px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Erreur */
+    .error-block {
+      text-align: center;
+      padding: 30px 10px 12px;
+    }
+
+    .error-block h2 {
+      font-size: 1.1rem;
+      color: #fecaca;
+      margin-bottom: 8px;
+    }
+
+    .error-block p {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 520px) {
       .card {
-        padding: 16px 14px 18px;
+        padding: 22px 18px 18px;
+      }
+      .qr-wrapper {
+        padding: 12px;
       }
       #qrcode {
-        width: 220px;
-        height: 220px;
+        width: 230px;
+        height: 230px;
       }
       #qrcode canvas,
       #qrcode img {
-        max-width: 220px;
-        max-height: 220px;
+        max-width: 200px;
+        max-height: 200px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      #snow-container,
+      .lang-switch,
+      .ribbon,
+      .btn-actions {
+        display: none !important;
+      }
+      .wrapper {
+        max-width: 100%;
+      }
+      .card {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
       }
     }
   </style>
@@ -327,82 +368,90 @@
 
   <div class="wrapper">
     <div class="card">
-      <div class="card-header">
-        <div class="brand">
-          <div class="brand-mark">
-            <div class="brand-initials">LFIV</div>
-          </div>
-          <div class="brand-text">
-            <div class="school">
-              Lycée Français <span>International</span> de Vientiane
-            </div>
-            <div class="event" id="tagline">
-              Fête de Noël
-            </div>
-          </div>
-        </div>
+      <div class="ribbon" id="ribbon-text">INVITATION FAMILLE</div>
 
-        <div class="lang-switch">
-          <button class="lang-btn" data-lang="fr">
-            <span class="lang-flag">🇫🇷</span>
-            <span class="lang-label">Français</span>
-          </button>
-          <button class="lang-btn" data-lang="lo">
-            <span class="lang-flag">🇱🇦</span>
-            <span class="lang-label">ລາວ</span>
-          </button>
-          <button class="lang-btn" data-lang="en">
-            <span class="lang-flag">🇬🇧</span>
-            <span class="lang-label">English</span>
-          </button>
-        </div>
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="fr">
+          <span class="lang-flag">🇫🇷</span>
+          <span class="lang-label">FR</span>
+        </button>
+        <button class="lang-btn" data-lang="la">
+          <span class="lang-flag">🇱🇦</span>
+          <span class="lang-label">LA</span>
+        </button>
+        <button class="lang-btn" data-lang="en">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-label">EN</span>
+        </button>
       </div>
 
-      <div id="content-ok" style="display:none;">
-        <h1 id="title"></h1>
-        <p class="subtitle" id="subtitle"></p>
-
-        <div class="qr-card">
-          <div id="qrcode"></div>
+      <!-- Contenu OK -->
+      <div class="card-inner" id="content-ok" style="display:none;">
+        <div class="card-header">
+          <div class="school-name" id="school-name">
+            LYCÉE FRANÇAIS INTERNATIONAL DE VIENTIANE
+          </div>
+          <div class="event-title" id="event-title">Soirée de Noël</div>
+          <div class="event-subtitle" id="event-subtitle">2025 • ACCÈS FAMILLE</div>
         </div>
 
-        <div class="text-block">
-          <p class="line" id="line1"></p>
-          <p class="line" id="line2"></p>
-          <p class="code-label">
-            <span id="code-label-prefix"></span>
-            <span class="code-value" id="code-value"></span>
+        <div class="body-text">
+          <p id="body-line-1">
+            Présentez ce <strong>QR code</strong> à l'entrée le soir de la fête.
+          </p>
+          <p id="body-line-2">
+            Un seul QR par famille suffit. Pour gagner du temps, gardez cette page ouverte ou faites une capture d'écran.
           </p>
         </div>
 
-        <div class="btn-row">
-          <button class="btn-primary" id="btn-download">
-            <span class="icon">📥</span>
-            <span id="btn-text">Télécharger le QR</span>
+        <div class="code-pill">
+          <span class="code-label" id="code-label">Code famille :</span>
+          <span class="code-value" id="code-value">00000</span>
+        </div>
+
+        <div class="qr-wrapper">
+          <div id="qrcode"></div>
+        </div>
+
+        <div class="footer-text" id="footer-text">
+          Ce QR est <strong>unique</strong> pour votre famille.
+        </div>
+        <div class="hint" id="hint-text">
+          Astuce : augmentez la luminosité de l'écran lors du scan.
+        </div>
+
+        <div class="btn-actions">
+          <button class="btn-pill btn-secondary" id="btn-print">
+            <span class="icon">🖨️</span>
+            <span id="btn-print-text">Imprimer la carte</span>
           </button>
-          <p class="small-note" id="small-note"></p>
+          <button class="btn-pill btn-primary" id="btn-download">
+            <span class="icon">📥</span>
+            <span id="btn-download-text">Télécharger le QR</span>
+          </button>
         </div>
       </div>
 
-      <div id="content-error" class="error" style="display:none;">
+      <!-- Contenu erreur -->
+      <div class="card-inner error-block" id="content-error" style="display:none;">
         <h2 id="error-title">QR invalide</h2>
-        <p id="error-text">Code manquant ou lien incorrect.</p>
+        <p id="error-text">Code manquant ou lien incorrect. Merci de vérifier le lien reçu.</p>
       </div>
     </div>
   </div>
 
   <script>
-    // --- Flocons discrets ---
+    // --- Flocons ---
     (function createSnow() {
       const container = document.getElementById("snow-container");
-      for (let i = 0; i < 26; i++) {
+      for (let i = 0; i < 24; i++) {
         const s = document.createElement("div");
         s.className = "snowflake";
         s.textContent = "❄";
         s.style.left = Math.random() * 100 + "%";
-        s.style.animationDuration = (7 + Math.random() * 7) + "s";
-        s.style.animationDelay = (Math.random() * 5) + "s";
-        s.style.fontSize = (9 + Math.random() * 10) + "px";
+        s.style.animationDuration = (7 + Math.random() * 6) + "s";
+        s.style.animationDelay = (Math.random() * 6) + "s";
+        s.style.fontSize = (8 + Math.random() * 10) + "px";
         container.appendChild(s);
       }
     })();
@@ -410,151 +459,166 @@
     // --- Traductions ---
     const translations = {
       fr: {
-        tagline: "Fête de Noël",
-        title: "Votre QR d'accès famille",
-        subtitle: "À présenter à l'accueil le soir de l'événement.",
-        line1: "Ce QR code est lié à votre famille pour la fête de Noël du LFIV.",
-        line2: "Vous pouvez le garder sur votre téléphone ou l'imprimer si besoin.",
-        codeLabelPrefix: "Code famille : ",
+        ribbon: "INVITATION FAMILLE",
+        school: "LYCÉE FRANÇAIS INTERNATIONAL DE VIENTIANE",
+        title: "Soirée de Noël",
+        subtitle: "2025 • ACCÈS FAMILLE",
+        body1: "Présentez ce <strong>QR code</strong> à l'entrée le soir de la fête.",
+        body2: "Un seul QR par famille suffit. Pour gagner du temps, gardez cette page ouverte ou faites une capture d'écran.",
+        codeLabel: "Code famille :",
+        footer: "Ce QR est <strong>unique</strong> pour votre famille.",
+        hint: "Astuce : augmentez la luminosité de l'écran lors du scan.",
         btnDownload: "Télécharger le QR",
-        smallNote: "Astuce : augmentez la luminosité de l'écran lors du scan.",
+        btnPrint: "Imprimer la carte",
         errorTitle: "QR invalide",
-        errorText: "Code manquant ou lien incorrect. Merci de vérifier le message reçu."
+        errorText: "Code manquant ou lien incorrect. Merci de vérifier le lien reçu."
       },
       en: {
-        tagline: "Christmas Celebration",
-        title: "Your family access QR",
-        subtitle: "Please show it at the entrance on the evening of the event.",
-        line1: "This QR code is linked to your family for the LFIV Christmas celebration.",
-        line2: "You may keep it on your phone or print it if you prefer.",
-        codeLabelPrefix: "Family code: ",
+        ribbon: "FAMILY INVITATION",
+        school: "LYCÉE FRANÇAIS INTERNATIONAL DE VIENTIANE",
+        title: "Christmas Evening",
+        subtitle: "2025 • FAMILY ACCESS",
+        body1: "Show this <strong>QR code</strong> at the entrance on the evening of the event.",
+        body2: "One QR per family is enough. To save time, keep this page open or take a screenshot.",
+        codeLabel: "Family code:",
+        footer: "This QR code is <strong>unique</strong> to your family.",
+        hint: "Tip: increase your screen brightness when scanning.",
         btnDownload: "Download QR",
-        smallNote: "Tip: increase your screen brightness when scanning.",
+        btnPrint: "Print the pass",
         errorTitle: "Invalid QR",
-        errorText: "Missing code or incorrect link. Please check the message you received."
+        errorText: "Missing code or invalid link. Please check the link you received."
       },
-      lo: {
-        tagline: "ງານລ້ຽງຄຣິສມາດ",
-        title: "QR ເຂົ້າຮ່ວມຂອງຄອບຄົວ",
-        subtitle: "ສະແດງ QR ນີ້ທີ່ທາງເຂົ້າໃນຄືນງານ.",
-        line1: "QR ນີ້ຜູກກັບຄອບຄົວຂອງທ່ານສຳລັບງານຄຣິສມາດຂອງ LFIV.",
-        line2: "ສາມາດເກັບໄວ້ໃນໂທລະສັບ ຫຼືພິມອອກກໍໄດ້.",
-        codeLabelPrefix: "ລະຫັດຄອບຄົວ: ",
+      la: {
+        ribbon: "ບັດເຊີນຄອບຄົວ",
+        school: "LYCÉE FRANÇAIS INTERNATIONAL DE VIENTIANE",
+        title: "ງານລ້ຽງຄຣິສມາດ",
+        subtitle: "2025 • ເຂົ້າຮ່ວມຄອບຄົວ",
+        body1: "ສະແດງ <strong>QR code</strong> ນີ້ທີ່ທາງເຂົ້າໃນຄືນວັນງານ.",
+        body2: "1 QR ຕໍ່ 1 ຄອບຄົວກໍພຽງພໍ. ເພື່ອປະຫຍັດເວລາ ສາມາດເປີດໜ້ານີ້ທິ້ງໄວ້ ຫຼືເຮັດຮູບຈໍ.",
+        codeLabel: "ລະຫັດຄອບຄົວ:",
+        footer: "QR ນີ້ເປັນ <strong>ຂອງຄອບຄົວທ່ານ</strong> ໂດຍສະເພາະ.",
+        hint: "ແນະນຳ: ເພີ່ມຄວາມສວ່າງຫນ້າຈໍເມື່ອສະແກນ QR.",
         btnDownload: "ດາວໂຫຼດ QR",
-        smallNote: "ແນະນຳ: ເພີ່ມຄວາມສະຫວ່າງຂອງຈໍເວລາສະແກນ.",
+        btnPrint: "ພິມບັດ QR",
         errorTitle: "QR ບໍ່ຖືກຕ້ອງ",
-        errorText: "ບໍ່ພົບລະຫັດ ຫຼືລິ້ງບໍ່ຖືກຕ້ອງ. ກະລຸນາກວດສອບຂໍ້ຄວາມທີ່ໄດ້ຮັບ."
+        errorText: "ບໍ່ພົບລະຫັດ ຫຼື ລິ້ງບໍ່ຖືກ. ກວດເບິ່ງລິ້ງທີ່ໄດ້ຮັບອີກຄັ້ງ."
       }
     };
 
-    function detectLang() {
-      const nav = (navigator.language || (navigator.languages && navigator.languages[0]) || "fr").toLowerCase();
-      if (nav.startsWith("fr")) return "fr";
-      if (nav.startsWith("en")) return "en";
-      if (nav.startsWith("lo") || nav.startsWith("la")) return "lo";
-      return "fr";
-    }
-
-    let currentLang = detectLang();
-
-    function applyLang(lang) {
-      currentLang = lang;
-      const t = translations[lang] || translations.fr;
-
-      document.documentElement.setAttribute("lang", lang);
-      document.getElementById("tagline").textContent = t.tagline;
-      document.getElementById("title").textContent = t.title;
-      document.getElementById("subtitle").textContent = t.subtitle;
-      document.getElementById("line1").textContent = t.line1;
-      document.getElementById("line2").textContent = t.line2;
-      document.getElementById("code-label-prefix").textContent = t.codeLabelPrefix;
-      document.getElementById("btn-text").textContent = t.btnDownload;
-      document.getElementById("small-note").textContent = t.smallNote;
-      document.getElementById("error-title").textContent = t.errorTitle;
-      document.getElementById("error-text").textContent = t.errorText;
-
-      document.querySelectorAll(".lang-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.lang === lang);
-      });
-    }
-
-    function getCodeFromUrl() {
+    document.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       const code = (params.get("c") || params.get("code") || "").trim();
-      return code || null;
-    }
 
-    function buildQrString(code) {
-      // Encode une URL type https://noel.lfiv.org/?c=XXXXX
-      const origin = window.location.origin;
-      const path = window.location.pathname.split("#")[0].split("?")[0];
-      return origin + path + "?c=" + encodeURIComponent(code);
-    }
+      const contentOk = document.getElementById("content-ok");
+      const contentError = document.getElementById("content-error");
+      const codeValueEl = document.getElementById("code-value");
 
-    function renderQr(code) {
-      const container = document.getElementById("qrcode");
-      container.innerHTML = "";
+      const hasValidCode = !!code && /^\d+$/.test(code);
 
-      const qrText = buildQrString(code);
-
-      new QRCode(container, {
-        text: qrText,
-        width: 260,
-        height: 260,
-        colorDark: "#111827",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      document.getElementById("code-value").textContent = code;
-    }
-
-    function setupDownloadButton(code) {
-      const btn = document.getElementById("btn-download");
-      btn.onclick = () => {
-        const canvas = document.querySelector("#qrcode canvas");
-        const img = document.querySelector("#qrcode img");
-        let dataUrl = null;
-
-        // On prend UNIQUEMENT le canvas/image du QR
-        if (canvas && canvas.toDataURL) {
-          dataUrl = canvas.toDataURL("image/png");
-        } else if (img && img.src) {
-          dataUrl = img.src;
-        }
-        if (!dataUrl) return;
-
-        const a = document.createElement("a");
-        a.href = dataUrl;
-        a.download = "LFIV_Noel_QR_" + code + ".png";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      };
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      // Langue auto + switch
-      applyLang(currentLang);
-      document.querySelectorAll(".lang-btn").forEach(btn => {
-        btn.addEventListener("click", () => applyLang(btn.dataset.lang));
-      });
-
-      const code = getCodeFromUrl();
-      const okBlock = document.getElementById("content-ok");
-      const errorBlock = document.getElementById("content-error");
-
-      if (!code) {
-        okBlock.style.display = "none";
-        errorBlock.style.display = "block";
-        return;
+      if (hasValidCode) {
+        codeValueEl.textContent = code;
+        generateQR(code);
+        contentOk.style.display = "block";
+      } else {
+        contentError.style.display = "block";
       }
 
-      okBlock.style.display = "block";
-      errorBlock.style.display = "none";
+      // Détection langue
+      let detected = "fr";
+      const navLang = (navigator.language || navigator.userLanguage || "fr").toLowerCase();
+      if (navLang.startsWith("fr")) detected = "fr";
+      else if (navLang.startsWith("lo")) detected = "la";
+      else if (navLang.startsWith("en")) detected = "en";
+      else detected = "fr";
 
-      renderQr(code);
-      setupDownloadButton(code);
+      let currentLang = detected;
+      applyLanguage(currentLang);
+
+      // Switch langues
+      const langButtons = document.querySelectorAll(".lang-btn");
+      langButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const lang = btn.getAttribute("data-lang");
+          currentLang = lang;
+          applyLanguage(lang);
+        });
+      });
+
+      // Bouton téléchargement (uniquement le QR)
+      const btnDownload = document.getElementById("btn-download");
+      if (btnDownload) {
+        btnDownload.addEventListener("click", () => {
+          const qrCanvas = document.querySelector("#qrcode canvas");
+          const qrImg = document.querySelector("#qrcode img");
+
+          let dataUrl = null;
+
+          if (qrCanvas && qrCanvas.toDataURL) {
+            dataUrl = qrCanvas.toDataURL("image/png");
+          } else if (qrImg) {
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.width = qrImg.naturalWidth || 512;
+            tempCanvas.height = qrImg.naturalHeight || 512;
+            const ctx = tempCanvas.getContext("2d");
+            ctx.drawImage(qrImg, 0, 0, tempCanvas.width, tempCanvas.height);
+            dataUrl = tempCanvas.toDataURL("image/png");
+          }
+
+          if (!dataUrl) return;
+
+          const link = document.createElement("a");
+          link.href = dataUrl;
+          link.download = `lfiv_noel_qr_${code || "famille"}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        });
+      }
+
+      // Bouton impression
+      const btnPrint = document.getElementById("btn-print");
+      if (btnPrint) {
+        btnPrint.addEventListener("click", () => {
+          window.print();
+        });
+      }
+
+      function applyLanguage(lang) {
+        const t = translations[lang] || translations.fr;
+
+        document.getElementById("ribbon-text").textContent = t.ribbon;
+        document.getElementById("school-name").textContent = t.school;
+        document.getElementById("event-title").textContent = t.title;
+        document.getElementById("event-subtitle").textContent = t.subtitle;
+        document.getElementById("body-line-1").innerHTML = t.body1;
+        document.getElementById("body-line-2").textContent = t.body2;
+        document.getElementById("code-label").textContent = t.codeLabel;
+        document.getElementById("footer-text").innerHTML = t.footer;
+        document.getElementById("hint-text").textContent = t.hint;
+        document.getElementById("btn-download-text").textContent = t.btnDownload;
+        document.getElementById("btn-print-text").textContent = t.btnPrint;
+        document.getElementById("error-title").textContent = t.errorTitle;
+        document.getElementById("error-text").textContent = t.errorText;
+
+        // Active state
+        document.querySelectorAll(".lang-btn").forEach(b => {
+          b.classList.toggle("active", b.getAttribute("data-lang") === lang);
+        });
+      }
+
+      function generateQR(text) {
+        const container = document.getElementById("qrcode");
+        if (!container) return;
+        container.innerHTML = "";
+        new QRCode(container, {
+          text: text,
+          width: 220,
+          height: 220,
+          colorDark: "#020617",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
     });
   </script>
 </body>
