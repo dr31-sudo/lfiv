@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>LFIV Noël – Redirection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #8B0000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
+  <script>
+    (function () {
+      // 👉 Mets ici l'URL de ta Web App Apps Script (celle qui marche déjà)
+      const APPS_SCRIPT_BASE = "https://script.google.com/macros/s/AKfycbwiZKIYlKIgHpneLfkC7BdIhOuIrI5otdoYyVJXfRoRa6SKMGMTzfvlMwUXO36-OpmI/exec";
+
+      const params = new URLSearchParams(window.location.search);
+      const code = (params.get("c") || params.get("code") || "").trim();
+      const type = (params.get("type") || "").trim();
+
+      if (!code) {
+        document.addEventListener("DOMContentLoaded", () => {
+          document.body.innerHTML = "<h1>❌ QR invalide</h1><p>Paramètre <code>c</code> manquant.</p>";
+        });
+        return;
+      }
+
+      const targetParams = new URLSearchParams();
+      targetParams.set("c", code);
+      if (type) {
+        targetParams.set("type", type);
+      }
+
+      const targetUrl = APPS_SCRIPT_BASE + "?" + targetParams.toString();
+
+      // Redirection vers Apps Script
+      window.location.replace(targetUrl);
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirection en cours vers LFIV Noël…</p>
+</body>
+</html>
