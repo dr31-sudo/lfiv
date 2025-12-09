@@ -24,7 +24,6 @@
       --bg-top: #111827;
       --bg-bottom: #7f1d1d;
       --card-bg: #020617;
-      --card-inner: #020617;
       --accent-gold: #fbbf24;
       --accent-green: #15803d;
       --accent-red: #dc2626;
@@ -102,8 +101,9 @@
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
     }
 
+    /* On descend tout le contenu pour dégager les drapeaux */
     .card-inner {
-      margin-top: 52px; /* on descend le contenu pour ne pas être sous les boutons langue */
+      margin-top: 78px;
     }
 
     .card-header {
@@ -133,10 +133,11 @@
       color: #e5e7eb;
     }
 
+    /* Drapeaux en haut à droite du carré, sans toucher le titre */
     .lang-switch {
       position: absolute;
-      top: 10px;        /* plus haut */
-      right: 18px;      /* bien collé à droite du carré */
+      top: 10px;
+      right: 18px;
       display: inline-flex;
       border-radius: 999px;
       padding: 2px;
@@ -546,7 +547,7 @@
         });
       });
 
-      // Bouton téléchargement = capture de TOUTE la carte
+      // Bouton téléchargement = capture de TOUTE la carte (ruban + texte + QR)
       const btnDownload = document.getElementById("btn-download");
       if (btnDownload) {
         btnDownload.addEventListener("click", () => {
@@ -554,7 +555,7 @@
           if (!card || !window.html2canvas) return;
 
           html2canvas(card, {
-            backgroundColor: null,
+            backgroundColor: "#1f2937",
             scale: window.devicePixelRatio > 1 ? 2 : 1
           }).then(canvas => {
             const link = document.createElement("a");
@@ -567,7 +568,7 @@
         });
       }
 
-      // Bouton impression (utilise le @media print)
+      // Bouton impression
       const btnPrint = document.getElementById("btn-print");
       if (btnPrint) {
         btnPrint.addEventListener("click", () => {
@@ -592,7 +593,6 @@
         document.getElementById("error-title").textContent = t.errorTitle;
         document.getElementById("error-text").textContent = t.errorText;
 
-        // Active state
         document.querySelectorAll(".lang-btn").forEach(b => {
           b.classList.toggle("active", b.getAttribute("data-lang") === lang);
         });
