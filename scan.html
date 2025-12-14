@@ -269,10 +269,9 @@
         <div class="title-block">
           <h1><span class="icon">🎅</span>LFIV Noël – Scanner entrées</h1>
           <div class="subtitle">
-            Scanne un QR à la fois. Le résultat s'affiche et le scanner se met en pause.
+            Chaque famille peut scanner 2 fois (2 personnes). Au-delà, alerte jaune.
           </div>
         </div>
-        <!-- badge supprimé -->
       </div>
 
       <div class="main">
@@ -284,19 +283,19 @@
           <h2><span>📊</span> Suivi en temps réel</h2>
           <div class="tips">
             <ul>
-              <li>Vert = entrée validée</li>
-              <li>Jaune = déjà scannée</li>
-              <li>Rouge = code inconnu / non autorisé</li>
+              <li>✅ Vert = scan 1 ou 2 validé</li>
+              <li>⚠️ Jaune = déjà 2 scans (ou +)</li>
+              <li>⛔ Rouge = code inconnu</li>
             </ul>
           </div>
 
           <div class="stats">
             <div class="stat ok">
-              <div class="stat-label">Entrées validées (uniques)</div>
+              <div class="stat-label">Scans validés (1er ou 2e)</div>
               <div class="stat-value" id="stat-ok">0</div>
             </div>
             <div class="stat dup">
-              <div class="stat-label">Scans déjà passés</div>
+              <div class="stat-label">Tentatives 3e scan+</div>
               <div class="stat-value" id="stat-dup">0</div>
             </div>
             <div class="stat invalid">
@@ -408,20 +407,22 @@
     let html5QrCode = null;
     let isPaused = false;
 
-    let scanEvents = [];        // {code,status,timestamp}
-    let validatedCodes = new Set();
-    let countDup = 0;
-    let countBad = 0;
+    let scanEvents = [];           // {code, status, timestamp, scanNumber}
+    let scanCounts = {};           // { "code": count }
+    let countOk = 0;               // scans validés (1er ou 2e)
+    let countDup = 0;              // tentatives 3e scan et +
+    let countBad = 0;              // codes inconnus
 
     function saveToStorage() {
       const payload = {
         events: scanEvents,
-        validated: Array.from(validatedCodes)
+        counts: scanCounts
       };
       localStorage.setItem("lfiv_noel_scans", JSON.stringify(payload));
     }
 
     function rebuildCounters() {
+      countOk = scanEvents.filter(e => e.status === "ok").length;
       countDup = scanEvents.filter(e => e.status === "duplicate").length;
       countBad = scanEvents.filter(e => e.status === "invalid").length;
     }
@@ -431,8 +432,8 @@
         const raw = localStorage.getItem("lfiv_noel_scans");
         if (!raw) return;
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.events))   scanEvents = parsed.events;
-        if (Array.isArray(parsed.validated)) validatedCodes = new Set(parsed.validated);
+        if (Array.isArray(parsed.events)) scanEvents = parsed.events;
+        if (parsed.counts && typeof parsed.counts === "object") scanCounts = parsed.counts;
         rebuildCounters();
       } catch (e) {
         console.error("Erreur load storage", e);
@@ -440,9 +441,26 @@
     }
 
     function updateStats() {
-      document.getElementById("stat-ok").textContent  = validatedCodes.size;
+      document.getElementById("stat-ok").textContent  = countOk;
       document.getElementById("stat-dup").textContent = countDup;
       document.getElementById("stat-bad").textContent = countBad;
+    }
+
+    // Convertir UTC en heure Bangkok (UTC+7)
+    function toBangkokTime(isoString) {
+      const date = new Date(isoString);
+      // Convertir en heure Bangkok (UTC+7)
+      const bangkokTime = new Date(date.getTime() + (7 * 60 * 60 * 1000));
+      
+      // Formater : YYYY-MM-DD HH:MM:SS
+      const year = bangkokTime.getUTCFullYear();
+      const month = String(bangkokTime.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(bangkokTime.getUTCDate()).padStart(2, '0');
+      const hours = String(bangkokTime.getUTCHours()).padStart(2, '0');
+      const minutes = String(bangkokTime.getUTCMinutes()).padStart(2, '0');
+      const seconds = String(bangkokTime.getUTCSeconds()).padStart(2, '0');
+      
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
     // extrait le code depuis le contenu du QR
@@ -482,12 +500,12 @@
         modal.classList.add("modal-ok");
         icon.textContent  = "✅";
         title.textContent = "Entrée validée";
-        msg.textContent   = "La famille est enregistrée pour la soirée.";
+        msg.textContent   = `Scan ${info.scanNumber}/2 pour cette famille.`;
       } else if (info.status === "duplicate") {
         modal.classList.add("modal-dup");
         icon.textContent  = "⚠️";
-        title.textContent = "Déjà scannée";
-        msg.textContent   = "Cette famille a déjà été validée à l'entrée.";
+        title.textContent = "Déjà 2 scans effectués";
+        msg.textContent   = `Cette famille a déjà scanné ${info.scanNumber} fois. Limite : 2 scans.`;
       } else {
         modal.classList.add("modal-bad");
         icon.textContent  = "⛔";
@@ -516,22 +534,35 @@
 
       const now = new Date().toISOString();
       let status;
+      let scanNumber;
 
       if (!VALID_CODES.has(code)) {
+        // Code inconnu
         status = "invalid";
         countBad++;
-      } else if (validatedCodes.has(code)) {
-        status = "duplicate";
-        countDup++;
+        scanNumber = null;
       } else {
-        status = "ok";
-        validatedCodes.add(code);
+        // Code connu
+        const currentCount = scanCounts[code] || 0;
+        scanNumber = currentCount + 1;
+
+        if (currentCount < 2) {
+          // 1er ou 2e scan : OK
+          status = "ok";
+          countOk++;
+          scanCounts[code] = scanNumber;
+        } else {
+          // 3e scan et + : duplicate
+          status = "duplicate";
+          countDup++;
+          scanCounts[code] = scanNumber;
+        }
       }
 
-      scanEvents.push({ code, status, timestamp: now });
+      scanEvents.push({ code, status, timestamp: now, scanNumber });
       saveToStorage();
       updateStats();
-      showResultModal({ code, status });
+      showResultModal({ code, status, scanNumber });
     }
 
     // LOGIQUE DE SCAN QR
@@ -548,13 +579,13 @@
       // on ignore les erreurs de lecture
     }
 
-    // EXPORT CSV
+    // EXPORT CSV (avec conversion en heure Bangkok UTC+7)
     function exportCsv() {
       if (!scanEvents.length) return;
 
-      const header = ["code","statut","timestamp"].join(",");
+      const header = ["code","statut","numero_scan","heure_bangkok"].join(",");
       const rows = scanEvents.map(e =>
-        `"${e.code}","${e.status}","${e.timestamp}"`
+        `"${e.code}","${e.status}","${e.scanNumber || ''}","${toBangkokTime(e.timestamp)}"`
       );
       const csv = [header, ...rows].join("\n");
 
@@ -573,7 +604,8 @@
     function clearLocal() {
       if (!confirm("Effacer tous les scans enregistrés sur CET appareil ?")) return;
       scanEvents = [];
-      validatedCodes = new Set();
+      scanCounts = {};
+      countOk = 0;
       countDup = 0;
       countBad = 0;
       saveToStorage();
